@@ -11,7 +11,10 @@ using namespace std;
 void log_out(const char *_lvl, const char *_file, int _line, const char *_msg)
 {
 
-    cout << _lvl << " " << _file << ":" << _line << ": " << _msg << "\n";
+    printf("%s %s:%03d: %s\n", _lvl, _file, _line, _msg);
+
+    // cout
+    //     << _lvl << " " << _file << ":" << _line << ": " << _msg << "\n";
     // cout << ":\n\t" << _msg << "\n";
 }
 
