@@ -1,8 +1,8 @@
 CC=g++
 STD=-std=c++11
-CFLAGS=-g -Wall -Wextra -Wconversion -pedantic
-SRC=main.cpp
-HDRS=NumCpp.h
+CFLAGS=-g -Wall -Wextra -Wconversion -pedantic -D DEBUG
+SRC=main.cpp logger.cpp
+HDRS=NumCpp.h 
 OBJ=main.o 
 BIN=main
 
