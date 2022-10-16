@@ -234,13 +234,6 @@ void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
 }
 
 template <class T>
-NumCpp<T> *NumCpp<T>::operator+(const NumCpp<T> *other)
-{
-
-    return nullptr;
-}
-
-template <class T>
 NumCpp<T> *NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
 {
     NumCpp<T> *ret = new NumCpp<T>();
@@ -254,6 +247,13 @@ NumCpp<T> *NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
     ret->set(src, s_shape, s_dims);
     free(src);
     return ret;
+}
+
+template <class T>
+NumCpp<T> *NumCpp<T>::operator+(const NumCpp<T> *other)
+{
+
+    return nullptr;
 }
 
 template <class T>
