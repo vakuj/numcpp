@@ -19,6 +19,7 @@ private:
     bool _set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims);
     // bool _set_row();
     // bool _set_col();
+    void _insert(const T, uint32_t offset);
 
 public:
     NumCpp();
@@ -42,6 +43,11 @@ public:
 
     void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0); // return current data
+
+    NumCpp *zero(uint32_t *s_shape, uint32_t s_dims);
+
+    NumCpp *operator+(const NumCpp *);
+    NumCpp *operator+(const T);
 
     // void del(uint32_t atdim = 0, uint32_t idx = 0);                   // delete current data --> nullptr
     // void replace(const T *src, uint32_t atdim = 0, uint32_t idx = 0); // replace part of current data
@@ -90,64 +96,68 @@ void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
 {
     if (_shape == NULL)
     {
-        LOG(INFO, __FILE__, __LINE__, "_shape is null, allocating new");
         _shape = (uint32_t *)malloc(s_dims * sizeof(uint32_t));
     }
     else
     {
         if (s_dims != _dims)
         {
-            LOG(INFO, __FILE__, __LINE__, "s_dims != _dims -> reallocating _shape");
             _shape = (uint32_t *)realloc(_shape, s_dims * sizeof(uint32_t));
         }
     }
 
-    LOG(INFO, __FILE__, __LINE__, "updating _shape");
     _shape = (uint32_t *)memcpy(_shape, s_shape, s_dims * sizeof(uint32_t));
-    LOG(INFO, __FILE__, __LINE__, "updating _dims");
     _dims = s_dims;
-    LOG(INFO, __FILE__, __LINE__, "updating _size");
-    _size = 0;
+    _size = 1;
     for (uint32_t i = 0; i < _dims; i++)
     {
-        _size += _shape[i];
+        _size *= _shape[i];
     }
 }
 
 template <class T>
 bool NumCpp<T>::_set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims)
 {
-    uint32_t s_size = 0;
+    uint32_t s_size = 1;
     for (uint32_t i = 0; i < s_dims; i++)
     {
-        s_size += s_shape[i];
+        s_size *= s_shape[i];
     }
     if (_data == NULL)
     {
-        LOG(INFO, __FILE__, __LINE__, "_data is null, allocating new");
         _data = (T *)calloc(s_size, sizeof(T));
-        LOG(INFO, __FILE__, __LINE__, "Setting _data");
         _data = (T *)memcpy(_data, src, s_size * sizeof(T));
-        _upd_shape(s_shape, s_dims);
+        NumCpp<T>::_upd_shape(s_shape, s_dims);
         return true;
     }
     else if (_size != s_size)
     {
-        LOG(INFO, __FILE__, __LINE__, "s_size != m_size, reallocating and copying");
         _data = (T *)realloc(_data, s_size * sizeof(T));
         _data = (T *)memcpy(_data, src, s_size * sizeof(T));
-        _upd_shape(s_shape, s_dims);
+        NumCpp<T>::_upd_shape(s_shape, s_dims);
         return true;
     }
     else if (_size == s_size)
     {
-        LOG(INFO, __FILE__, __LINE__, "shapes matches -> let's copy directly");
         _data = (T *)memcpy(_data, src, s_size * sizeof(T));
         _upd_shape(s_shape, s_dims);
         return true;
     }
-    LOG(IMPL, __FILE__, __LINE__, "Not implemented yet --> something missing here!");
+    else
+        LOG(IMPL, __FILE__, __LINE__, "Not implemented yet --> Uncatched case for setting data encountered");
     return false;
+}
+
+template <class T>
+void NumCpp<T>::_insert(T val, uint32_t offset)
+{
+    if (offset > _size)
+    {
+        LOG(ERROR, __FILE__, __LINE__, "Attempt at insertion outside allowed memory");
+        LOG(INFO, __FILE__, __LINE__, "Insertion aborted");
+        return;
+    }
+    _data[offset] = val;
 }
 
 /** [PUBLIC] */
@@ -177,9 +187,10 @@ void NumCpp<T>::disp(void)
     }
     else
     {
-        printf(" data:\n");
+        printf(" data:\n    ");
         if (_dims == 1)
         {
+            printf("   C00\n");
             for (uint32_t i = 0; i < _shape[0]; ++i)
             {
                 printf("R%02d: %4.3f\n", i, _data[i]);
@@ -187,18 +198,21 @@ void NumCpp<T>::disp(void)
         }
         if (_dims == 2)
         {
+            for (uint32_t i = 0; i < _shape[1]; ++i)
+                printf("   C%02d", i);
+            printf("\n");
             for (uint32_t i = 0; i < _shape[0]; ++i)
             {
                 printf("R%02d:", i);
                 for (uint32_t j = 0; j < _shape[1]; ++j)
                 {
-                    printf(" %4.3f ", _data[i * _shape[0] + j]);
+                    printf(" %4.3f", _data[i * _shape[0] + j]);
                 }
                 printf("\n");
             }
         }
 
-        // sLOG(IMPL, __FILE__, __LINE__, "Display data != NULL not supported yet.");
+        // LOG(IMPL, __FILE__, __LINE__, "Display data != NULL not supported yet.");
     }
     printf("\n==============\n\n");
 }
@@ -219,4 +233,48 @@ void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
         LOG(INFO, __FILE__, __LINE__, "_set_data return true");
 }
 
+template <class T>
+NumCpp<T> *NumCpp<T>::operator+(const NumCpp<T> *other)
+{
+
+    return nullptr;
+}
+
+template <class T>
+NumCpp<T> *NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
+{
+    NumCpp<T> *ret = new NumCpp<T>();
+    uint32_t s_size = 1;
+    for (uint32_t i = 0; i < s_dims; ++i)
+    {
+        s_size *= s_shape[i];
+    }
+
+    T *src = (T *)calloc(s_size, sizeof(T));
+    ret->set(src, s_shape, s_dims);
+    free(src);
+    return ret;
+}
+
+template <class T>
+NumCpp<T> *NumCpp<T>::operator+(const T other)
+{
+    if (_data == NULL)
+        return nullptr;
+    else if (_dims == 0)
+        return nullptr;
+    else
+    {
+        if (_dims > 2)
+            LOG(IMPL, __FILE__, __LINE__, "_dims > 2 not currently supported.");
+        NumCpp<T> *ret = NumCpp<T>::zero(_shape, _dims);
+
+        for (uint32_t i = 0; i < _size; ++i)
+        {
+            ret->_insert(_data[i] + other, i);
+        }
+        return ret;
+    }
+    return nullptr;
+}
 #endif
