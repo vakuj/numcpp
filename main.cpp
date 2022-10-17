@@ -31,28 +31,13 @@ int main()
         printf("%d x ", a[i]);
     printf("(1) = %d\n", n1->size());
 
-    /**
-     * NumCpp<float> ret;
-     * ret = *n1 + (float)1.;
-     * --->
-     * In file included from main.cpp:8:
-     * NumCpp.h:9:7: note: candidate: ‘NumCpp<float>& NumCpp<float>::operator=(const NumCpp<float>&)’
-     *      9 | class NumCpp
-     *        |       ^~~~~~
-     * NumCpp.h:9:7: note:   no known conversion for argument 1 from ‘NumCpp<float>*’ to ‘const NumCpp<float>&’
-     *
-     */
-    NumCpp<float> *ret2 = n1->operator+(1.);
-
-    ret2->disp();
-
-    for (size_t i = 0; i < 10; i++)
-    {
-        ret2 = n1->operator+((float)i);
-        // ret2 = n1 + (float)1.; // why not this work?
-        // ret2 = *n1 + (float)1.; // or this?
-        ret2->disp();
-    }
+    NumCpp<float> ret1(src, s_shape, s_dims);
+    NumCpp<float> ret2(s_shape, s_dims);
+    ret1.disp();
+    ret2.disp();
+    NumCpp<float> ret3;
+    ret3 = ret1 + ret2; // seg faults here, likely due to set and/or zero
+    ret3.disp();
 
     return 0;
 }

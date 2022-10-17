@@ -21,8 +21,12 @@ private:
     // bool _set_col();
     void _insert(const T, uint32_t offset);
 
+    bool _check_null(const T *src, uint32_t *shape, uint32_t dims);
+    bool _check_shape(const NumCpp *b);
+
 public:
     NumCpp();
+    NumCpp(uint32_t *, uint32_t);
     NumCpp(const T *, uint32_t *, uint32_t);
     NumCpp(const char *);
     ~NumCpp();
@@ -44,10 +48,10 @@ public:
     void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0); // return current data
 
-    NumCpp *zero(uint32_t *s_shape, uint32_t s_dims);
+    NumCpp zero(uint32_t *s_shape, uint32_t s_dims);
 
-    NumCpp *operator+(const NumCpp *);
-    NumCpp *operator+(const T);
+    NumCpp operator+(const NumCpp &);
+    NumCpp operator+(const T);
 
     // void del(uint32_t atdim = 0, uint32_t idx = 0);                   // delete current data --> nullptr
     // void replace(const T *src, uint32_t atdim = 0, uint32_t idx = 0); // replace part of current data
@@ -76,9 +80,33 @@ NumCpp<T>::NumCpp()
     _shape = nullptr;
 }
 template <class T>
-NumCpp<T>::NumCpp(const T *_src, uint32_t *_s, uint32_t _d)
+NumCpp<T>::NumCpp(uint32_t *s_shape, uint32_t s_dims)
 {
-    set(_src, _s, _d);
+    _shape = (uint32_t *)calloc(s_dims, sizeof(uint32_t));
+    uint32_t s_size = 1;
+    for (uint32_t i = 0; i < s_dims; ++i)
+    {
+        s_size *= s_shape[i];
+        _shape[i] = s_shape[i];
+    }
+    _data = (T *)calloc(s_size, sizeof(T));
+    _dims = s_dims;
+    _size = s_size;
+}
+template <class T>
+NumCpp<T>::NumCpp(const T *src, uint32_t *s_shape, uint32_t s_dims)
+{
+    _shape = (uint32_t *)calloc(s_dims, sizeof(uint32_t));
+    uint32_t s_size = 1;
+    for (uint32_t i = 0; i < s_dims; ++i)
+    {
+        s_size *= s_shape[i];
+        _shape[i] = s_shape[i];
+    }
+    _data = (T *)calloc(s_size, sizeof(T));
+    _data = (T *)memcpy(_data, src, s_size * sizeof(T));
+    _dims = s_dims;
+    _size = s_size;
 }
 
 template <class T>
@@ -159,6 +187,25 @@ void NumCpp<T>::_insert(T val, uint32_t offset)
     }
     _data[offset] = val;
 }
+template <class T>
+bool NumCpp<T>::_check_null(const T *src, uint32_t *shape, uint32_t dims)
+{
+    return (src != NULL && shape != NULL && dims != 0);
+}
+template <class T>
+bool NumCpp<T>::_check_shape(const NumCpp<T> *b)
+{
+    if (_dims != b->_dims)
+        return false;
+    // uint32_t *ash = a->shape();
+    // const uint32_t *bsh = b->shape();
+    for (uint32_t i = 0; i < _dims; ++i)
+    {
+        if (_shape[i] != b->_shape[i])
+            return false;
+    }
+    return true;
+}
 
 /** [PUBLIC] */
 template <class T>
@@ -177,9 +224,26 @@ void NumCpp<T>::disp(void)
     else
     {
         if (_dims == 1)
+        {
+            if (_shape[0] > 100)
+            {
+                LOG(ERROR, __FILE__, __LINE__, "Seg fault capture");
+                LOG(INFO, __FILE__, __LINE__, "shape[0] > 100 --> returning early");
+                return;
+            }
             printf("shape: %d\n", _shape[0]);
+        }
         if (_dims == 2)
+        {
+
+            if (_shape[0] > 100 || _shape[1] > 100)
+            {
+                LOG(ERROR, __FILE__, __LINE__, "Seg fault capture");
+                LOG(INFO, __FILE__, __LINE__, "shape[0/1] > 100 --> returning early");
+                return;
+            }
             printf("shape: %d x %d\n", _shape[0], _shape[1]);
+        }
     }
     if (_data == NULL)
     {
@@ -234,9 +298,9 @@ void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
 }
 
 template <class T>
-NumCpp<T> *NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
+NumCpp<T> NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
 {
-    NumCpp<T> *ret = new NumCpp<T>();
+    NumCpp<T> ret;
     uint32_t s_size = 1;
     for (uint32_t i = 0; i < s_dims; ++i)
     {
@@ -244,37 +308,54 @@ NumCpp<T> *NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
     }
 
     T *src = (T *)calloc(s_size, sizeof(T));
-    ret->set(src, s_shape, s_dims);
+    ret.set(src, s_shape, s_dims);
     free(src);
     return ret;
 }
 
 template <class T>
-NumCpp<T> *NumCpp<T>::operator+(const NumCpp<T> *other)
+NumCpp<T> NumCpp<T>::operator+(const NumCpp<T> &b)
 {
+    NumCpp<T> ret;
 
-    return nullptr;
+    if (!_check_null(_data, _shape, _dims))
+    {
+        LOG(INFO, __FILE__, __LINE__, "returned early here");
+        return ret;
+    }
+    if (!_check_null(b._data, b._shape, b._dims))
+    {
+        LOG(INFO, __FILE__, __LINE__, "returned early here");
+        return ret;
+    }
+    if (!_check_shape(&b))
+    {
+        LOG(INFO, __FILE__, __LINE__, "returned early here");
+        return ret;
+    }
+    ret = NumCpp<T>::zero(_shape, _dims);
+    for (uint32_t i = 0; i < _size; ++i)
+    {
+        ret._insert(_data[i] + b._data[i], i);
+    }
+    return ret;
 }
 
 template <class T>
-NumCpp<T> *NumCpp<T>::operator+(const T other)
+NumCpp<T> NumCpp<T>::operator+(const T b)
 {
-    if (_data == NULL)
-        return nullptr;
-    else if (_dims == 0)
-        return nullptr;
-    else
-    {
-        if (_dims > 2)
-            LOG(IMPL, __FILE__, __LINE__, "_dims > 2 not currently supported.");
-        NumCpp<T> *ret = NumCpp<T>::zero(_shape, _dims);
 
-        for (uint32_t i = 0; i < _size; ++i)
-        {
-            ret->_insert(_data[i] + other, i);
-        }
+    NumCpp<T> ret;
+    if (!_check_null(_data, _shape, _dims))
         return ret;
+
+    ret = NumCpp<T>::zero(_shape, _dims);
+
+    for (uint32_t i = 0; i < _size; ++i)
+    {
+        ret._insert(_data[i] + b, i);
     }
-    return nullptr;
+    return ret;
 }
+
 #endif
