@@ -7,6 +7,7 @@
 
 #include "NumCpp.h"
 #include "logger.cpp"
+
 using namespace std;
 
 int main()
@@ -36,7 +37,10 @@ int main()
     ret1.disp();
     ret2.disp();
     NumCpp<float> ret3;
-    ret3 = ret1 + ret2; // seg faults here, likely due to set and/or zero
+    ret3 = ret1 + ret1; // seg faults here, likely due to set and/or zero
+    ret3.disp();
+
+    ret3 = ret3 + 10.f;
     ret3.disp();
 
     return 0;
