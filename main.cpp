@@ -14,7 +14,7 @@ int main()
 {
 
     NumCpp<float> *n1 = new NumCpp<float>();
-    // NumCpp<float> *n2 = new NumCpp<float>();
+
     n1->disp();
 
     float src[] = {1., 2., 3., 4.};
@@ -24,8 +24,6 @@ int main()
     uint32_t s_dims = 2;
     n1->set(src, s_shape, s_dims);
     n1->disp();
-    // n1->set(src, s_shape, s_dims);
-    // n1->disp();
 
     const uint32_t *a = n1->shape();
     for (uint32_t i = 0; i < n1->dims(); ++i)
@@ -37,7 +35,7 @@ int main()
     ret1.disp();
     ret2.disp();
     NumCpp<float> ret3;
-    ret3 = ret1 + ret1; // seg faults here, likely due to set and/or zero
+    ret3 = ret1 + ret1;
     ret3.disp();
 
     ret3 = ret3 + 10.f;
