@@ -32,14 +32,32 @@ int main()
 
     NumCpp<float> ret1(src, s_shape, s_dims);
     NumCpp<float> ret2(s_shape, s_dims);
-    ret1.disp();
-    ret2.disp();
+    ret1.disp("ret1");
+    ret2.disp("ret2");
     NumCpp<float> ret3;
     ret3 = ret1 + ret1;
-    ret3.disp();
+    ret3.disp("ret3 = ret1 + ret1;");
+    ret1.disp("ret1");
+    ret2.disp("ret2");
 
     ret3 = ret3 + 10.f;
-    ret3.disp();
+    ret3.disp("ret3 = ret3 + 10.f;");
+    ret3 = ret3 + ret1;
+    ret3.disp("ret3 = ret3 + ret1;");
+    ret3 = ret3 - ret1;
+    ret3.disp("ret3 = ret3 - ret1;");
+    ret3 = ret3 * ret1;
+    ret3.disp("ret3 = ret3 * ret1;");
+    ret3 = ret3 / ret1;
+    ret3.disp("ret3 = ret3 / ret1;");
+    ret3 = ret3 + 10.f;
+    ret3.disp("ret3 = ret3 + 10.f;");
+    ret3 = ret3 - 10.f;
+    ret3.disp("ret3 = ret3 - 10.f;");
+    ret3 = ret3 * 10.f;
+    ret3.disp("ret3 = ret3 * 10.f;");
+    ret3 = ret3 / 10.f;
+    ret3.disp("ret3 = ret3 / 10.f;");
 
     return 0;
 }
