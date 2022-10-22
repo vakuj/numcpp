@@ -22,15 +22,12 @@ void test_predefs(void)
     NumCpp<float> z1 = NumCpp<float>::zero(s_shape, NDIMS(s_shape));
     NumCpp<float> z2 = NumCpp<float>::zero(w_shape, NDIMS(w_shape));
     NumCpp<float> z3 = NumCpp<float>::zero(l_shape, NDIMS(l_shape));
-
     NumCpp<float> o1 = NumCpp<float>::ones(s_shape, NDIMS(s_shape));
     NumCpp<float> o2 = NumCpp<float>::ones(w_shape, NDIMS(w_shape));
     NumCpp<float> o3 = NumCpp<float>::ones(l_shape, NDIMS(l_shape));
-
     NumCpp<float> d1 = NumCpp<float>::diag(s_shape, NDIMS(s_shape));
     NumCpp<float> d2 = NumCpp<float>::diag(w_shape, NDIMS(w_shape));
     NumCpp<float> d3 = NumCpp<float>::diag(l_shape, NDIMS(l_shape));
-
     NumCpp<float> f1 = NumCpp<float>::fill(s_shape, NDIMS(s_shape), 69.0);
     NumCpp<float> f2 = NumCpp<float>::fill(w_shape, NDIMS(w_shape), 69.0);
     NumCpp<float> f3 = NumCpp<float>::fill(l_shape, NDIMS(l_shape), 69.0);
@@ -47,6 +44,37 @@ void test_predefs(void)
     o3.disp("ones 3");
     d3.disp("diag 3");
     f3.disp("fill 3");
+
+    NumCpp<float> z4 = NumCpp<float>::zero(10);
+    NumCpp<float> o4 = NumCpp<float>::ones(10);
+    NumCpp<float> d4 = NumCpp<float>::diag(10);
+    NumCpp<float> f4 = NumCpp<float>::fill(10, 69.0);
+    z4.disp("zero 4");
+    o4.disp("ones 4");
+    d4.disp("diag 4");
+    f4.disp("fill 4");
+
+    NumCpp<float> a1 = NumCpp<float>::arange(0.f, 1.f, .1f, false);
+    NumCpp<float> a2 = NumCpp<float>::arange(0.f, 1.f, .1f, true);
+    NumCpp<float> a3 = NumCpp<float>::arange(-1.f, 0.f, .1f);
+    NumCpp<float> a4 = NumCpp<float>::arange(1.f, 0.f, -.1f);
+    NumCpp<float> a5 = NumCpp<float>::arange(0.f, 1.f, 2.f);
+    a1.disp("arange 1");
+    a2.disp("arange 2");
+    a3.disp("arange 3");
+    a4.disp("arange 4");
+    a5.disp("arange 5");
+
+    NumCpp<float> l1 = NumCpp<float>::linspace(0.f, 1.f, 10);
+    NumCpp<float> l2 = NumCpp<float>::linspace(0.f, 1.1f, 11);
+    NumCpp<float> l3 = NumCpp<float>::linspace(-1.f, 0.f, 10);
+    NumCpp<float> l4 = NumCpp<float>::linspace(1.f, 0.f, 10);
+    NumCpp<float> l5 = NumCpp<float>::linspace(0.f, 1.f, 1);
+    l1.disp("linspace 1");
+    l2.disp("linspace 2");
+    l3.disp("linspace 3");
+    l4.disp("linspace 4");
+    l5.disp("linspace 5");
 }
 
 void test_ops(void)

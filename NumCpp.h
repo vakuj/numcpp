@@ -21,7 +21,6 @@ private:
 
     void _insert(const T, uint32_t offset);
 
-    /** */
     NumCpp _op_nfun(const NumCpp &, T (*fun)(T, T));
     NumCpp _op_cfun(const T, T (*fun)(T, T));
     static T _op_add(T a, T b) { return a + b; }
@@ -51,11 +50,24 @@ public:
     void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0); // return current data
 
-    /** Predefined data structures */
+    /** Predefined data structures
+     * See NumCpp_predefs.h
+     */
+
+    /** M x N x ... */
     static NumCpp zero(uint32_t *s_shape, uint32_t s_dims);
     static NumCpp diag(uint32_t *s_shape, uint32_t s_dims);
     static NumCpp fill(uint32_t *s_shape, uint32_t s_dims, const T val);
     static NumCpp ones(uint32_t *s_shape, uint32_t s_dims) { return NumCpp::fill(s_shape, s_dims, (T)1); }
+    /** N x N */
+    static NumCpp zero(uint32_t n);
+    static NumCpp diag(uint32_t n);
+    static NumCpp fill(uint32_t n, const T val);
+    static NumCpp ones(uint32_t n) { return NumCpp::fill(n, (T)1); }
+    /** 1 x N */
+    static NumCpp arange(const T v0, const T v1, const T d, const bool end = true);
+    static NumCpp linspace(const T v0, const T v1, const uint32_t n);
+    /** END predefs */
 
     /** Operators and math */
     NumCpp &operator+=(const NumCpp &);
