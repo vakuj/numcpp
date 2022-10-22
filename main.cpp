@@ -12,7 +12,7 @@ using namespace std;
 
 #define NDIMS(x) (uint32_t)(sizeof(x) / sizeof(x[0]))
 
-void test_predefs(void)
+void test_predefs_mxn(void)
 {
     uint32_t s_shape[] = {3, 3};    // square
     uint32_t w_shape[] = {10, 3};   // wide
@@ -44,6 +44,9 @@ void test_predefs(void)
     o3.disp("ones 3");
     d3.disp("diag 3");
     f3.disp("fill 3");
+}
+void test_predefs_nxn(void)
+{
 
     NumCpp<float> z4 = NumCpp<float>::zero(10);
     NumCpp<float> o4 = NumCpp<float>::ones(10);
@@ -53,6 +56,9 @@ void test_predefs(void)
     o4.disp("ones 4");
     d4.disp("diag 4");
     f4.disp("fill 4");
+}
+void test_predefs_1xn(void)
+{
 
     NumCpp<float> a1 = NumCpp<float>::arange(0.f, 1.f, .1f, false);
     NumCpp<float> a2 = NumCpp<float>::arange(0.f, 1.f, .1f, true);
@@ -116,7 +122,9 @@ void test_ops(void)
 
 int main()
 {
-    // test_ops();
-    test_predefs();
+    test_ops();
+    test_predefs_mxn();
+    test_predefs_nxn();
+    test_predefs_1xn();
     return 0;
 }
