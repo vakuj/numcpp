@@ -235,14 +235,30 @@ void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
 template <class T>
 NumCpp<T> NumCpp<T>::reshape(uint32_t *n_shape, uint32_t n_dims)
 {
-    return *this;
+    if (n_shape == NULL)
+    {
+        LOG(ERROR, "Cannot reshape to empty data structure (n_shape = NULL)");
+        return *this;
+    }
+    if (n_dims == 0)
+    {
+        LOG(ERROR, "Cannot reshape to empty data structure (n_dims = 0)");
+        return *this;
+    }
+    if (n_dims > 2)
+    {
+        LOG(ERROR, "Cannot reshape to higher dimensions (n_dims > 2) ");
+        LOG(IMPL, "Feature not implemented yet");
+        return *this;
+    }
+    return this->reshape(n_shape[0], n_shape[1]);
 }
 template <class T>
 NumCpp<T> NumCpp<T>::reshape(uint32_t m, uint32_t n)
 {
     if (m == 0 || n == 0)
     {
-        LOG(ERROR, "Cannot reshape to empty data structure (m = 0 or n = 0)");
+        LOG(ERROR, "Cannot reshape to empty data structure (m = 0 and/or n = 0)");
         return *this;
     }
     if (this->_dims == 0)
