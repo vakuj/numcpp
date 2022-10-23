@@ -28,6 +28,16 @@ private:
     static T _op_mul(T a, T b) { return a * b; }
     static T _op_div(T a, T b) { return a / b; }
 
+    NumCpp _op_nlogic(const NumCpp &, bool (*fun)(T, T));
+    NumCpp _op_clogic(const T, bool (*fun)(T, T));
+
+    static bool _op_neq(T a, T b) { return a != b; }
+    static bool _op_leq(T a, T b) { return a <= b; }
+    static bool _op_les(T a, T b) { return a < b; }
+    static bool _op_geq(T a, T b) { return _op_leq(b, a); }
+    static bool _op_gre(T a, T b) { return _op_les(b, a); }
+    static bool _op_equ(T a, T b) { return !_op_neq(a, b); }
+
     bool _check_null(const T *src, uint32_t *shape, uint32_t dims);
     bool _check_shape(const NumCpp *b);
 
@@ -93,6 +103,22 @@ public:
     NumCpp operator-(const T b) { return _op_cfun(b, &_op_sub); }
     NumCpp operator*(const T b) { return _op_cfun(b, &_op_mul); }
     NumCpp operator/(const T b) { return _op_cfun(b, &_op_div); }
+
+    NumCpp operator==(const NumCpp &b) { return _op_nlogic(b, &_op_equ); }
+    NumCpp operator!=(const NumCpp &b) { return _op_nlogic(b, &_op_neq); }
+    NumCpp operator<=(const NumCpp &b) { return _op_nlogic(b, &_op_leq); }
+    NumCpp operator>=(const NumCpp &b) { return _op_nlogic(b, &_op_geq); }
+    NumCpp operator<(const NumCpp &b) { return _op_nlogic(b, &_op_les); }
+    NumCpp operator>(const NumCpp &b) { return _op_nlogic(b, &_op_gre); }
+
+    NumCpp operator==(const T b) { return _op_clogic(b, &_op_equ); }
+    NumCpp operator!=(const T b) { return _op_clogic(b, &_op_neq); }
+    NumCpp operator<=(const T b) { return _op_clogic(b, &_op_leq); }
+    NumCpp operator>=(const T b) { return _op_clogic(b, &_op_geq); }
+    NumCpp operator<(const T b) { return _op_clogic(b, &_op_les); }
+    NumCpp operator>(const T b) { return _op_clogic(b, &_op_gre); }
+
+    // NumCpp operator==()
 };
 
 /** [CONSTRUCTOR / DESTRUCTOR]*/

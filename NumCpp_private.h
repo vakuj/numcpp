@@ -150,3 +150,46 @@ NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &b, T (*fun)(T, T))
     }
     return ret;
 }
+
+template <class T>
+NumCpp<T> NumCpp<T>::_op_clogic(const T b, bool (*fun)(T, T))
+{
+
+    if (!_check_null(this->_data, this->_shape, this->_dims))
+    {
+        LOG(WARN, "Null check failed on a");
+        return *this;
+    }
+    NumCpp<T> ret(this->_shape, this->_dims);
+    for (uint32_t i = 0; i < this->_size; ++i)
+    {
+        ret._insert(fun(this->_data[i], b) ? (T)1 : (T)0, i);
+    }
+    return ret;
+}
+
+template <class T>
+NumCpp<T> NumCpp<T>::_op_nlogic(const NumCpp<T> &b, bool (*fun)(T, T))
+{
+    if (!_check_null(this->_data, this->_shape, this->_dims))
+    {
+        LOG(WARN, "Null check failed on a");
+        return *this;
+    }
+    if (!_check_null(b._data, b._shape, b._dims))
+    {
+        LOG(WARN, "Null check failed on b");
+        return *this;
+    }
+    if (!_check_shape(&b))
+    {
+        LOG(WARN, "Incompatible shapes for a and b");
+        return *this;
+    }
+    NumCpp<T> ret(this->_shape, this->_dims);
+    for (uint32_t i = 0; i < this->_size; ++i)
+    {
+        ret._insert(fun(this->_data[i], b._data[i]) ? (T)1 : (T)0, i);
+    }
+    return ret;
+}
