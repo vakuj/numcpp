@@ -326,7 +326,29 @@ NumCpp<T> NumCpp<T>::flatten(bool to_row)
 template <class T>
 NumCpp<T> NumCpp<T>::trans(void)
 {
+    if (this->_data == NULL)
+    {
+        LOG(ERROR, "Cannot transpose empty data (data = NULL)");
+        return *this;
+    }
+    if (this->_dims > 2)
+    {
+        LOG(ERROR, "Cannot transpose higher dimensions (dims > 2)");
+        LOG(IMPL, "Feature not implemented yet");
+        return *this;
+    }
+    if (this->_dims == 1)
+    {
+        // from m x 1 to 1 x m -> only needs shape change.
+        this->_dims = 2;
+        this->_shape = (uint32_t *)realloc(this->_shape, sizeof(uint32_t) * this->_dims);
+        this->_shape[0] = 1;
+        this->_shape[1] = this->_size;
+        return *this;
+    }
+
     LOG(IMPL, "Not implemented yet");
+
     return *this;
 }
 /** Operators */
