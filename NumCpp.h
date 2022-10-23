@@ -346,9 +346,46 @@ NumCpp<T> NumCpp<T>::trans(void)
         this->_shape[1] = this->_size;
         return *this;
     }
-
+    // dims == 2 at this point
+    if ((this->_shape[0] == 1) || (this->_shape[1] == 1)) // still 1d -> just swap shape
+    {
+        uint32_t tmp = this->_shape[0];
+        this->_shape[0] = this->_shape[1];
+        this->_shape[1] = tmp;
+        return *this;
+    }
+    if (this->_shape[0] == this->_shape[1])
+    {
+        for (uint32_t r = 0; r < this->_shape[0]; ++r)
+        {
+            for (uint32_t c = r + 1; c < this->_shape[0]; ++c)
+            {
+                T u = this->_data[r * this->_shape[0] + c];
+                this->_data[r * this->_shape[0] + c] = this->_data[c * this->_shape[0] + r];
+                this->_data[c * this->_shape[0] + r] = u;
+            }
+        }
+        return *this;
+    }
     LOG(IMPL, "Not implemented yet");
-
+    /**
+     * 1 2 3
+     * 4 5 6
+     *
+     * 1 4
+     * 2 5
+     * 3 6
+     *
+     * 1 2 3
+     * 4 5 6
+     * 7 8 9
+     *
+     * 1 4 7
+     * 2 5 8
+     * 3 6 9
+     *
+     *
+     */
     return *this;
 }
 /** Operators */
