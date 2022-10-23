@@ -119,6 +119,9 @@ public:
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
     bool any(const T);
     bool all(const T);
+    T sum(void);
+    NumCpp sum(uint32_t dim);
+    NumCpp cumsum(void);
     NumCpp sin(void);
     NumCpp cos(void);
     NumCpp asin(void);
