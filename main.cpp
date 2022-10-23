@@ -223,12 +223,41 @@ void test_ops(void)
     ret3.disp("ret3 = ret3 * 10.f;");
     ret3 = ret3 / 10.f;
     ret3.disp("ret3 = ret3 / 10.f;");
+
+    NumCpp<float> a = NumCpp<float>::arange(0.f, 9.f, 1.f, false).reshape(3, 3);
+    NumCpp<float> b = NumCpp<float>::arange(9.f, 0.f, -1.f, false).reshape(3, 3);
+    NumCpp<float> c1 = a == 5.f;
+    NumCpp<float> c2 = a != 5.f;
+    NumCpp<float> c3 = a <= 5.f;
+    NumCpp<float> c4 = a >= 5.f;
+    NumCpp<float> c5 = a > 5.f;
+    NumCpp<float> c6 = a < 5.f;
+    NumCpp<float> ab1 = a == b;
+    NumCpp<float> ab2 = a != b;
+    NumCpp<float> ab3 = a <= b;
+    NumCpp<float> ab4 = a >= b;
+    NumCpp<float> ab5 = a > b;
+    NumCpp<float> ab6 = a < b;
+    a.disp("a");
+    b.disp("b");
+    c1.disp("c1 = a == 5.f");
+    c2.disp("c2 = a != 5.f");
+    c3.disp("c3 = a <= 5.f");
+    c4.disp("c4 = a >= 5.f");
+    c5.disp("c5 = a > 5.f");
+    c6.disp("c6 = a < 5.f");
+    ab1.disp("ab1 = a == b");
+    ab2.disp("ab2 = a != b");
+    ab3.disp("ab3 = a <= b");
+    ab4.disp("ab4 = a >= b");
+    ab5.disp("ab5 = a > b");
+    ab6.disp("ab6 = a < b");
 }
 
 int main()
 {
-    // test_ops();
-    test_reshaping();
+    test_ops();
+    // test_reshaping();
     // test_predefs_mxnx1();
     // test_predefs_mxnx();
     // test_predefs_nxn();
