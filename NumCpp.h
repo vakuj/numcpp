@@ -38,21 +38,22 @@ public:
     NumCpp(const char *);
     ~NumCpp();
 
-    /**
-     * shapes and size of data
-     */
+    /** shapes and size of data */
     const uint32_t *shape(void) { return (const uint32_t *)_shape; }
     uint32_t dims(void) { return _dims; }
     uint32_t size(void) { return _size; }
 
     void disp(const char *msg = "no comment");
 
+    /** Getters and setters */
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0); // return current data
     void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
 
+    /** reshapers */
     NumCpp reshape(uint32_t *n_shape, uint32_t n_dims);
     NumCpp reshape(uint32_t m, uint32_t n);
     NumCpp flatten(bool to_row = false);
+    NumCpp trans(void);
 
     /** Predefined data structures
      * See NumCpp_predefs.h
@@ -322,7 +323,12 @@ NumCpp<T> NumCpp<T>::flatten(bool to_row)
     }
     return *this;
 }
-
+template <class T>
+NumCpp<T> NumCpp<T>::trans(void)
+{
+    LOG(IMPL, "Not implemented yet");
+    return *this;
+}
 /** Operators */
 template <class T>
 NumCpp<T> &NumCpp<T>::operator+=(const NumCpp<T> &b)
