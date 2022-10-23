@@ -2,7 +2,6 @@
 #include "NumCpp.h"
 
 /** 1 x N */
-
 template <class T>
 NumCpp<T> NumCpp<T>::arange(const T v0, const T v1, const T d, const bool end)
 {
@@ -39,6 +38,7 @@ NumCpp<T> NumCpp<T>::arange(const T v0, const T v1, const T d, const bool end)
     }
     return ret;
 }
+
 template <class T>
 NumCpp<T> NumCpp<T>::linspace(const T v0, const T v1, const uint32_t n)
 {
@@ -66,6 +66,7 @@ NumCpp<T> NumCpp<T>::zero(uint32_t n)
     ret._data = (T *)calloc(ret._size, sizeof(T));
     return ret;
 }
+
 template <class T>
 NumCpp<T> NumCpp<T>::diag(uint32_t n)
 {
@@ -81,6 +82,7 @@ NumCpp<T> NumCpp<T>::diag(uint32_t n)
     }
     return ret;
 }
+
 template <class T>
 NumCpp<T> NumCpp<T>::fill(uint32_t n, const T val)
 {
@@ -129,6 +131,7 @@ NumCpp<T> NumCpp<T>::zero(uint32_t m, uint32_t n)
     ret._data = (T *)calloc(ret._size, sizeof(T));
     return ret;
 }
+
 template <class T>
 NumCpp<T> NumCpp<T>::diag(uint32_t m, uint32_t n)
 {
@@ -155,6 +158,7 @@ NumCpp<T> NumCpp<T>::diag(uint32_t m, uint32_t n)
     }
     return ret;
 }
+
 template <class T>
 NumCpp<T> NumCpp<T>::fill(uint32_t m, uint32_t n, const T val)
 {
@@ -172,7 +176,6 @@ NumCpp<T> NumCpp<T>::fill(uint32_t m, uint32_t n, const T val)
 }
 
 /** M x N x ... */
-
 template <class T>
 NumCpp<T> NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
 {
