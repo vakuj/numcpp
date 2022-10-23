@@ -141,14 +141,17 @@ NumCpp<T> NumCpp<T>::diag(uint32_t m, uint32_t n)
     }
     uint32_t min_size = 0;
     if (ret._dims == 1)
-        min_size = 1;
+    {
+        ret._insert((T)1, 0);
+        return ret;
+    }
     else
     {
         min_size = (ret._shape[0] < ret._shape[1]) ? ret._shape[0] : ret._shape[1];
     }
     for (uint32_t i = 0; i < min_size; ++i)
     {
-        ret._insert((T)1, i);
+        ret._insert((T)1, i + i * ret._shape[1]);
     }
     return ret;
 }
