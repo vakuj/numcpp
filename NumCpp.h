@@ -47,8 +47,12 @@ public:
 
     void disp(const char *msg = "no comment");
 
-    void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0); // return current data
+    void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
+
+    NumCpp reshape(uint32_t *n_shape, uint32_t n_dims);
+    NumCpp reshape(uint32_t m, uint32_t n);
+    NumCpp flatten(bool to_row = false);
 
     /** Predefined data structures
      * See NumCpp_predefs.h
@@ -228,10 +232,49 @@ void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
         LOG(ERROR, "Could not set data.");
 }
 
+template <class T>
+NumCpp<T> NumCpp<T>::reshape(uint32_t *n_shape, uint32_t n_dims)
+{
+    return *this;
+}
+template <class T>
+NumCpp<T> NumCpp<T>::reshape(uint32_t m, uint32_t n)
+{
+    return *this;
+}
+template <class T>
+NumCpp<T> NumCpp<T>::flatten(bool to_row)
+{
+    if (this->_dims <= 1)
+    {
+        LOG(ERROR, "Cannot flatten a flattened (or zero) data structure (dims <= 1)");
+        return *this;
+    }
+    if (this->_dims > 2)
+    {
+        LOG(ERROR, "Cannot flatten higher dimensions (dims > 2) ");
+        LOG(IMPL, "Feature not implemented yet");
+        return *this;
+    }
+    // shape must be 2 here
+    if (to_row)
+    {
+        this->_shape[0] = 1;
+        this->_shape[1] = this->_size;
+    }
+    else
+    {
+        this->_shape[0] = this->_size;
+        this->_shape[1] = 1;
+    }
+    return *this;
+}
+
 /** Operators */
 template <class T>
 NumCpp<T> &NumCpp<T>::operator+=(const NumCpp<T> &b)
 {
     return this;
 }
+
 #endif
