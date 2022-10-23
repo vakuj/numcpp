@@ -240,6 +240,43 @@ NumCpp<T> NumCpp<T>::reshape(uint32_t *n_shape, uint32_t n_dims)
 template <class T>
 NumCpp<T> NumCpp<T>::reshape(uint32_t m, uint32_t n)
 {
+    if (m == 0 || n == 0)
+    {
+        LOG(ERROR, "Cannot reshape to empty data structure (m = 0 or n = 0)");
+        return *this;
+    }
+    if (this->_dims == 0)
+    {
+        LOG(ERROR, "Cannot reshape empty data structure (dims = 0)");
+        return *this;
+    }
+    if (this->_dims > 2)
+    {
+        LOG(ERROR, "Cannot reshape higher dimensions (dims > 2) ");
+        LOG(IMPL, "Feature not implemented yet");
+        return *this;
+    }
+    if (m * n != this->_size)
+    {
+        LOG(ERROR, "Cannot reshape due to size mismatch (m x n != size)");
+        return *this;
+    }
+    if (m == 1)
+        return this->flatten(true);
+    if (n == 1)
+        return this->flatten(false);
+    if (this->_dims == 1)
+    {
+        this->_dims = 2;
+        this->_shape = (uint32_t *)realloc(this->_shape, this->_dims * sizeof(uint32_t));
+        this->_shape[0] = m;
+        this->_shape[1] = n;
+        return *this;
+    }
+    // shape must be 2 here
+    this->_shape[0] = m;
+    this->_shape[1] = n;
+
     return *this;
 }
 template <class T>
