@@ -23,14 +23,12 @@ private:
 
     NumCpp _op_nfun(const NumCpp &, T (*fun)(T, T));
     NumCpp _op_cfun(const T, T (*fun)(T, T));
+    NumCpp _op_nlogic(const NumCpp &, bool (*fun)(T, T));
+    NumCpp _op_clogic(const T, bool (*fun)(T, T));
     static T _op_add(T a, T b) { return a + b; }
     static T _op_sub(T a, T b) { return a - b; }
     static T _op_mul(T a, T b) { return a * b; }
     static T _op_div(T a, T b) { return a / b; }
-
-    NumCpp _op_nlogic(const NumCpp &, bool (*fun)(T, T));
-    NumCpp _op_clogic(const T, bool (*fun)(T, T));
-
     static bool _op_neq(T a, T b) { return a != b; }
     static bool _op_leq(T a, T b) { return a <= b; }
     static bool _op_les(T a, T b) { return a < b; }
@@ -56,7 +54,6 @@ public:
     void disp(const char *msg = "no comment");
 
     /** Getters and setters */
-    void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0); // return current data
     void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
 
     /** reshapers */
@@ -65,9 +62,7 @@ public:
     NumCpp flatten(bool to_row = false);
     NumCpp trans(void);
 
-    /** Predefined data structures
-     * See NumCpp_predefs.h
-     */
+    /** Predefined data structures */
     /** M x N x ... */
     static NumCpp zero(uint32_t *s_shape, uint32_t s_dims);
     static NumCpp diag(uint32_t *s_shape, uint32_t s_dims);
@@ -89,21 +84,19 @@ public:
     /** END predefs */
 
     /** Operators and math */
-    NumCpp &operator+=(const NumCpp &);
-    NumCpp &operator-=(const NumCpp &);
-    NumCpp &operator*=(const NumCpp &);
-    NumCpp &operator/=(const NumCpp &);
-
+    /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }
     NumCpp operator-(const NumCpp &b) { return _op_nfun(b, &_op_sub); }
     NumCpp operator*(const NumCpp &b) { return _op_nfun(b, &_op_mul); }
     NumCpp operator/(const NumCpp &b) { return _op_nfun(b, &_op_div); }
 
+    /** arithmetic NumCpp to T */
     NumCpp operator+(const T b) { return _op_cfun(b, &_op_add); }
     NumCpp operator-(const T b) { return _op_cfun(b, &_op_sub); }
     NumCpp operator*(const T b) { return _op_cfun(b, &_op_mul); }
     NumCpp operator/(const T b) { return _op_cfun(b, &_op_div); }
 
+    /** comparison NumCpp to NumCpp */
     NumCpp operator==(const NumCpp &b) { return _op_nlogic(b, &_op_equ); }
     NumCpp operator!=(const NumCpp &b) { return _op_nlogic(b, &_op_neq); }
     NumCpp operator<=(const NumCpp &b) { return _op_nlogic(b, &_op_leq); }
@@ -111,14 +104,38 @@ public:
     NumCpp operator<(const NumCpp &b) { return _op_nlogic(b, &_op_les); }
     NumCpp operator>(const NumCpp &b) { return _op_nlogic(b, &_op_gre); }
 
+    /** comparison NumCpp to T */
     NumCpp operator==(const T b) { return _op_clogic(b, &_op_equ); }
     NumCpp operator!=(const T b) { return _op_clogic(b, &_op_neq); }
     NumCpp operator<=(const T b) { return _op_clogic(b, &_op_leq); }
     NumCpp operator>=(const T b) { return _op_clogic(b, &_op_geq); }
     NumCpp operator<(const T b) { return _op_clogic(b, &_op_les); }
     NumCpp operator>(const T b) { return _op_clogic(b, &_op_gre); }
+    /** END Operators and math */
 
-    // NumCpp operator==()
+    /** TODO */
+    bool save(const char *file);
+    NumCpp load(const char *file);
+    void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
+    bool any(const T);
+    bool all(const T);
+    NumCpp sin(void);
+    NumCpp cos(void);
+    NumCpp asin(void);
+    NumCpp acos(void);
+    NumCpp abs(void);
+    NumCpp sqrt(void);
+    NumCpp dot(const NumCpp a, const NumCpp b);
+    NumCpp matmul(const NumCpp a, const NumCpp b);
+    NumCpp det(const NumCpp a, const NumCpp b);
+    NumCpp det(const NumCpp a, const NumCpp b);
+    NumCpp norm(const NumCpp a, const NumCpp b);
+    NumCpp inv(const NumCpp a, const NumCpp b);
+    NumCpp &operator+=(const NumCpp &);
+    NumCpp &operator-=(const NumCpp &);
+    NumCpp &operator*=(const NumCpp &);
+    NumCpp &operator/=(const NumCpp &);
+    /** END TODO */
 };
 
 /** [CONSTRUCTOR / DESTRUCTOR]*/
@@ -407,12 +424,6 @@ NumCpp<T> NumCpp<T>::trans(void)
     this->_shape[1] = tmp;
     free(t);
     return *this;
-}
-/** Operators */
-template <class T>
-NumCpp<T> &NumCpp<T>::operator+=(const NumCpp<T> &b)
-{
-    return this;
 }
 
 #endif
