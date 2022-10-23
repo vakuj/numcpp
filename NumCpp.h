@@ -368,35 +368,18 @@ NumCpp<T> NumCpp<T>::trans(void)
         return *this;
     }
     T *t = (T *)calloc(this->_size, sizeof(T));
-    uint32_t r = 0, c = 0, nr = 0, nc = 0;
-    for (uint32_t i = 1; i < this->_size; ++i)
+    for (uint32_t i = 0; i < this->_shape[0]; ++i)
     {
-        r = i / this->_shape[0];
-        nr = i / this->_shape[1];
-        if (i % this->_shape[1] == 0)
-            c++;
-        if (i % this->_shape[0] == 0)
-            nc++;
-        printf("%d = (%d, %d) -> (%d,%d) = %d\n", i, r, c, nr, nc, nr * this->_shape[0] + nc);
+        for (uint32_t j = 0; j < this->_shape[1]; ++j)
+        {
+            t[j * this->_shape[0] + i] = this->_data[i * this->_shape[1] + j];
+        }
     }
-    LOG(IMPL, "Not implemented yet");
-    /**
-     *i0 1 2 3 4 5 6 7
-     *r0 1 2 3 0 1 2 3
-     *c0 0 0 0 1 1 1 1
-     *
-     * 1 2 3 4 5 6 7 8
-     * 1 5 2 6 3 7 4 8
-     *
-     *
-     * 1 2 3 4
-     * 5 6 7 8
-     *
-     * 1 5
-     * 2 6
-     * 3 7
-     * 4 8
-     */
+    this->_data = (T *)memcpy(this->_data, t, this->_size * sizeof(T));
+    uint32_t tmp = this->_shape[0];
+    this->_shape[0] = this->_shape[1];
+    this->_shape[1] = tmp;
+    free(t);
     return *this;
 }
 /** Operators */
