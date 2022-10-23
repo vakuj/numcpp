@@ -53,12 +53,16 @@ public:
     /** Predefined data structures
      * See NumCpp_predefs.h
      */
-
     /** M x N x ... */
     static NumCpp zero(uint32_t *s_shape, uint32_t s_dims);
     static NumCpp diag(uint32_t *s_shape, uint32_t s_dims);
     static NumCpp fill(uint32_t *s_shape, uint32_t s_dims, const T val);
     static NumCpp ones(uint32_t *s_shape, uint32_t s_dims) { return NumCpp::fill(s_shape, s_dims, (T)1); }
+    /** M x N */
+    static NumCpp zero(uint32_t m, uint32_t n);
+    static NumCpp diag(uint32_t m, uint32_t n);
+    static NumCpp fill(uint32_t m, uint32_t n, const T val);
+    static NumCpp ones(uint32_t m, uint32_t n) { return NumCpp::fill(m, n, (T)1); }
     /** N x N */
     static NumCpp zero(uint32_t n);
     static NumCpp diag(uint32_t n);
