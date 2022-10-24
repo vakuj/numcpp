@@ -43,7 +43,8 @@ public:
     NumCpp();
     NumCpp(uint32_t *, uint32_t);
     NumCpp(const T *, uint32_t *, uint32_t);
-    NumCpp(const char *);
+    NumCpp(NumCpp const &other) : NumCpp(other._data, other._shape, other._dims) {}
+    NumCpp(const char *); // TODO
     ~NumCpp();
 
     /** shapes and size of data */
@@ -84,6 +85,8 @@ public:
     /** END predefs */
 
     /** Operators and math */
+    NumCpp &operator=(const NumCpp &other);
+
     /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }
     NumCpp operator-(const NumCpp &b) { return _op_nfun(b, &_op_sub); }
@@ -113,7 +116,11 @@ public:
     NumCpp operator>(const T b) { return _op_clogic(b, &_op_gre); }
     /** END Operators and math */
 
-    /** TODO */
+    /** TODO check functionality:
+     * -> copy constructor
+     * -> operator=
+     */
+    /** TODO implemention */
     bool save(const char *file);
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
@@ -130,7 +137,6 @@ public:
     NumCpp sqrt(void);
     NumCpp dot(const NumCpp a, const NumCpp b);
     NumCpp matmul(const NumCpp a, const NumCpp b);
-    NumCpp det(const NumCpp a, const NumCpp b);
     NumCpp det(const NumCpp a, const NumCpp b);
     NumCpp norm(const NumCpp a, const NumCpp b);
     NumCpp inv(const NumCpp a, const NumCpp b);
@@ -186,6 +192,8 @@ NumCpp<T>::NumCpp(const T *src, uint32_t *s_shape, uint32_t s_dims)
 template <class T>
 NumCpp<T>::~NumCpp()
 {
+    free(_data);
+    free(_shape);
 }
 /** [PUBLIC] */
 template <class T>
@@ -429,4 +437,12 @@ NumCpp<T> NumCpp<T>::trans(void)
     return *this;
 }
 
+template <class T>
+NumCpp<T> &NumCpp<T>::operator=(const NumCpp<T> &other)
+{
+    if (this == &other)
+        return *this;
+    this->set(other._data, other._shape, other._dims);
+    return *this;
+}
 #endif
