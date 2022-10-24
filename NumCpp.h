@@ -44,7 +44,6 @@ public:
     NumCpp(uint32_t *, uint32_t);
     NumCpp(const T *, uint32_t *, uint32_t);
     NumCpp(NumCpp const &other) : NumCpp(other._data, other._shape, other._dims) {}
-    NumCpp(const char *); // TODO
     ~NumCpp();
 
     /** shapes and size of data */
@@ -121,6 +120,7 @@ public:
      * -> operator=
      */
     /** TODO implemention */
+    NumCpp(const char *);
     bool save(const char *file);
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
