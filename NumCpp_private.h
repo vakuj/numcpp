@@ -49,16 +49,16 @@ void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
 template <class T>
 bool NumCpp<T>::_inside_bound(const uint32_t loc)
 {
-    return loc < this->_size
+    return loc < this->_size;
 }
 template <class T>
 bool NumCpp<T>::_inside_bound(const loc_t loc)
 {
     if (this->_dims != 2)
         return false;
-    if (loc.r > this->_shape[1] || loc.c > this->_shape[0])
+    if (loc.row > this->_shape[1] || loc.col > this->_shape[0])
         return false;
-    return this->_inside_bound(loc.r * this->_shape[0] + loc.c);
+    return this->_inside_bound(loc.row * this->_shape[0] + loc.col);
 }
 template <class T>
 bool NumCpp<T>::_inside_bound(const uint32_t *s_shape, const uint32_t s_dims)
