@@ -187,7 +187,19 @@ void test_predefs_1xn(void)
     l4.disp("linspace 4");
     l5.disp("linspace 5");
 }
-
+void test_access(void)
+{
+    NumCpp<float> a = NumCpp<float>::linspace(0.f, 9.f, 9).reshape(3, 3);
+    a.disp();
+    loc_t loc;
+    loc.col = 0;
+    loc.row = 1;
+    float a1 = a[{1, 0}];
+    float a2 = a[loc];
+    printf("a1: %.3f\na2: %.3f\n", a1, a2);
+    NumCpp<float> row = a[1];
+    row.disp("row?");
+}
 void test_ops(void)
 {
 
@@ -256,7 +268,8 @@ void test_ops(void)
 
 int main()
 {
-    test_ops();
+    test_access();
+    // test_ops();
     // test_reshaping();
     // test_predefs_mxnx1();
     // test_predefs_mxnx();
