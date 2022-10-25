@@ -47,6 +47,35 @@ void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
 }
 
 template <class T>
+bool NumCpp<T>::_inside_bound(const uint32_t loc)
+{
+    return loc < this->_size
+}
+template <class T>
+bool NumCpp<T>::_inside_bound(const loc_t loc)
+{
+    if (this->_dims != 2)
+        return false;
+    if (loc.r > this->_shape[1] || loc.c > this->_shape[0])
+        return false;
+    return this->_inside_bound(loc.r * this->_shape[0] + loc.c);
+}
+template <class T>
+bool NumCpp<T>::_inside_bound(const uint32_t *s_shape, const uint32_t s_dims)
+{
+    if (s_dims != this->_dims)
+        return false;
+    uint32_t s_size = 1;
+    for (uint32_t i = 0; i < s_dims; ++i)
+    {
+        s_size *= s_shape[i];
+        if (s_shape[i] > this->_shape[i])
+            return false;
+    }
+    return this->_inside_bound(s_size);
+}
+
+template <class T>
 bool NumCpp<T>::_set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims)
 {
     uint32_t s_size = _get_size(s_shape, s_dims);
