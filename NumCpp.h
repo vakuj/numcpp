@@ -22,6 +22,7 @@ private:
     uint32_t *_shape;
 
     static uint32_t _get_size(const uint32_t *s_shape, uint32_t s_dims);
+    void _upd_shape(const uint32_t s_size);
     void _upd_shape(const uint32_t *s_shape, uint32_t s_dims);
     bool _set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims);
 
@@ -294,25 +295,23 @@ void NumCpp<T>::set(const T *src, uint32_t s_size)
         return;
     }
 
-    this->_dims = 1;
-    this->_shape = (uint32_t *)realloc(this->_shape, this->_dims * sizeof(uint32_t));
-    this->_shape[0] = s_size;
-
     if (this->_data == NULL)
     {
         this->_data = (T *)calloc(s_size, sizeof(T));
         this->_data = (T *)memcpy(this->_data, src, s_size);
-        this->_size = s_size;
-        this->_shape[0] = this->_size;
+        this->_upd_shape(s_size);
     }
     else if (this->_size != s_size)
     {
         this->_data = (T *)realloc(this->_data, s_size * sizeof(T));
         this->_data = (T *)memcpy(this->_data, src, s_size);
-        this->_size = s_size;
+        this->_upd_shape(s_size);
     }
     else if (this->_size == s_size)
+    {
         this->_data = (T *)memcpy(this->_data, src, s_size);
+        this->_upd_shape(s_size);
+    }
     else
         LOG(IMPL, "Not implemented yet --> Uncatched case for setting data encountered");
 
@@ -496,24 +495,29 @@ NumCpp<T> &NumCpp<T>::operator=(const NumCpp<T> &other)
 template <class T>
 NumCpp<T> &NumCpp<T>::operator[](const uint32_t loc)
 {
-    NumCpp<T> ret;
+    NumCpp<T> *ret = new NumCpp<T>();
     if (!_inside_bound(loc))
     {
         LOG(ERROR, "location outside of bounds of data");
-        return ret;
+        return *ret;
     }
     T *src = (T *)calloc(this->_shape[1], sizeof(T));
-    ret.set(src, this->_shape[1]);
+    for (uint32_t i = 0; i < this->_shape[1]; ++i)
+    {
+        src[i] = this->_data[loc * this->_shape[0] + i];
+    }
+    ret->set(src, this->_shape[1]);
     free(src);
-    return ret;
+    return *ret;
 }
 template <class T>
 T NumCpp<T>::operator[](const loc_t loc)
 {
     if (!_inside_bound(loc))
     {
+        /** TODO Find smart way to do univerally erronous return value */
         LOG(ERROR, "location outside of bounds of data");
-        return NULL;
+        return 0;
     }
     return this->_data[loc.row * this->_shape[0] + loc.col];
 }
