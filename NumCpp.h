@@ -5,6 +5,12 @@
 #include "logger.cpp"
 using namespace std;
 
+typedef struct
+{
+    uint32_t row;
+    uint32_t col;
+} loc_t;
+
 template <class T>
 class NumCpp
 {
@@ -20,6 +26,10 @@ private:
     bool _set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims);
 
     void _insert(const T, uint32_t offset);
+
+    bool _inside_bound(const uint32_t);
+    bool _inside_bound(const loc_t);
+    bool _inside_bound(const uint32_t *, const uint32_t);
 
     NumCpp _op_nfun(const NumCpp &, T (*fun)(T, T));
     NumCpp _op_cfun(const T, T (*fun)(T, T));
@@ -54,6 +64,7 @@ public:
     void disp(const char *msg = "no comment");
 
     /** Getters and setters */
+    void set(const T *src, uint32_t s_size);
     void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
 
     /** reshapers */
@@ -85,6 +96,8 @@ public:
 
     /** Operators and math */
     NumCpp &operator=(const NumCpp &other);
+    T operator[](const loc_t);
+    NumCpp &operator[](const uint32_t);
 
     /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }
@@ -273,6 +286,40 @@ void NumCpp<T>::disp(const char *msg)
 }
 
 template <class T>
+void NumCpp<T>::set(const T *src, uint32_t s_size)
+{
+    if (s_size == 0)
+    {
+        LOG(WARN, "s_size == 0 not supported. Nothing is done with _data");
+        return;
+    }
+
+    this->_dims = 1;
+    this->_shape = (uint32_t *)realloc(this->_shape, this->_dims * sizeof(uint32_t));
+    this->_shape[0] = s_size;
+
+    if (this->_data == NULL)
+    {
+        this->_data = (T *)calloc(s_size, sizeof(T));
+        this->_data = (T *)memcpy(this->_data, src, s_size);
+        this->_size = s_size;
+        this->_shape[0] = this->_size;
+    }
+    else if (this->_size != s_size)
+    {
+        this->_data = (T *)realloc(this->_data, s_size * sizeof(T));
+        this->_data = (T *)memcpy(this->_data, src, s_size);
+        this->_size = s_size;
+    }
+    else if (this->_size == s_size)
+        this->_data = (T *)memcpy(this->_data, src, s_size);
+    else
+        LOG(IMPL, "Not implemented yet --> Uncatched case for setting data encountered");
+
+    if (this->_data == NULL)
+        LOG(ERROR, "Could not set data.");
+}
+template <class T>
 void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
 {
     if (s_dims == 0)
@@ -444,5 +491,30 @@ NumCpp<T> &NumCpp<T>::operator=(const NumCpp<T> &other)
         return *this;
     this->set(other._data, other._shape, other._dims);
     return *this;
+}
+
+template <class T>
+NumCpp<T> &NumCpp<T>::operator[](const uint32_t loc)
+{
+    NumCpp<T> ret;
+    if (!_inside_bound(loc))
+    {
+        LOG(ERROR, "location outside of bounds of data");
+        return ret;
+    }
+    T *src = (T *)calloc(this->_shape[1], sizeof(T));
+    ret.set(src, this->_shape[1]);
+    free(src);
+    return ret;
+}
+template <class T>
+T NumCpp<T>::operator[](const loc_t loc)
+{
+    if (!_inside_bound(loc))
+    {
+        LOG(ERROR, "location outside of bounds of data");
+        return NULL;
+    }
+    return this->_data[loc.row * this->_shape[0] + loc.col];
 }
 #endif
