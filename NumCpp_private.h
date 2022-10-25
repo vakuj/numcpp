@@ -22,6 +22,26 @@ uint32_t NumCpp<T>::_get_size(const uint32_t *s_shape, uint32_t s_dims)
     }
     return s_size;
 }
+
+template <class T>
+void NumCpp<T>::_upd_shape(const uint32_t s_size)
+{
+
+    if (this->_shape == NULL)
+    {
+        this->_shape = (uint32_t *)malloc(1 * sizeof(uint32_t));
+    }
+    else
+    {
+        if (this->_dims != 1)
+        {
+            this->_shape = (uint32_t *)realloc(this->_shape, 1 * sizeof(uint32_t));
+        }
+    }
+    this->_shape[0] = s_size;
+    this->_dims = 1;
+    this->_size = s_size;
+}
 template <class T>
 void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
 {
