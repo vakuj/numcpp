@@ -165,8 +165,6 @@ bool NumCpp<T>::_check_shape(const NumCpp<T> *b)
 template <class T>
 NumCpp<T> NumCpp<T>::_op_cfun(const T b, T (*fun)(T, T))
 {
-
-    // if (!_check_null(this->_data, this->_shape, this->_dims))
     if (!this->_check_null())
     {
         LOG(WARN, "Null check failed on a");
@@ -183,7 +181,7 @@ NumCpp<T> NumCpp<T>::_op_cfun(const T b, T (*fun)(T, T))
 template <class T>
 NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &b, T (*fun)(T, T))
 {
-    if (!_check_null(this->_data, this->_shape, this->_dims))
+    if (!this->_check_null())
     {
         LOG(WARN, "Null check failed on a");
         return *this;
@@ -193,7 +191,7 @@ NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &b, T (*fun)(T, T))
         LOG(WARN, "Null check failed on b");
         return *this;
     }
-    if (!_check_shape(&b))
+    if (!this->_check_shape(&b))
     {
         LOG(WARN, "Incompatible shapes for a and b");
         return *this;
@@ -209,8 +207,7 @@ NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &b, T (*fun)(T, T))
 template <class T>
 NumCpp<T> NumCpp<T>::_op_clogic(const T b, bool (*fun)(T, T))
 {
-
-    if (!_check_null(this->_data, this->_shape, this->_dims))
+    if (!this->_check_null())
     {
         LOG(WARN, "Null check failed on a");
         return *this;
@@ -226,7 +223,7 @@ NumCpp<T> NumCpp<T>::_op_clogic(const T b, bool (*fun)(T, T))
 template <class T>
 NumCpp<T> NumCpp<T>::_op_nlogic(const NumCpp<T> &b, bool (*fun)(T, T))
 {
-    if (!_check_null(this->_data, this->_shape, this->_dims))
+    if (!this->_check_null())
     {
         LOG(WARN, "Null check failed on a");
         return *this;
