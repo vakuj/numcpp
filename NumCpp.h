@@ -298,18 +298,18 @@ void NumCpp<T>::set(const T *src, uint32_t s_size)
     if (this->_data == NULL)
     {
         this->_data = (T *)calloc(s_size, sizeof(T));
-        this->_data = (T *)memcpy(this->_data, src, s_size);
+        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
         this->_upd_shape(s_size);
     }
     else if (this->_size != s_size)
     {
         this->_data = (T *)realloc(this->_data, s_size * sizeof(T));
-        this->_data = (T *)memcpy(this->_data, src, s_size);
+        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
         this->_upd_shape(s_size);
     }
     else if (this->_size == s_size)
     {
-        this->_data = (T *)memcpy(this->_data, src, s_size);
+        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
         this->_upd_shape(s_size);
     }
     else

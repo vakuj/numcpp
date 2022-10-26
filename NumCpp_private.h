@@ -29,7 +29,7 @@ void NumCpp<T>::_upd_shape(const uint32_t s_size)
 
     if (this->_shape == NULL)
     {
-        this->_shape = (uint32_t *)malloc(1 * sizeof(uint32_t));
+        this->_shape = (uint32_t *)malloc(sizeof(uint32_t));
     }
     else
     {
