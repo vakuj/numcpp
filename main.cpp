@@ -6,12 +6,13 @@
 #include <cfloat>
 
 #include "NumCpp.h"
+#include "NumCpp_defs.h"
+
 #include "logger.cpp"
 
 using namespace std;
 
 #define NDIMS(x) (uint32_t)(sizeof(x) / sizeof(x[0]))
-
 void test_reshaping(void)
 {
     NumCpp<float>::zero(3, 3).disp("original");
@@ -189,15 +190,13 @@ void test_predefs_1xn(void)
 }
 void test_access(void)
 {
-    NumCpp<float> a = NumCpp<float>::linspace(0.f, 9.f, 9).reshape(3, 3);
+    NF a = NF::linspace(-9.f, 0.f, 9).reshape(3, 3);
     a.disp();
-    loc_t loc;
-    loc.col = 0;
-    loc.row = 1;
+    loc_t loc = {loc.row = 1, loc.col = 0};
     float a1 = a[{1, 0}];
     float a2 = a[loc];
-    printf("a1: %.3f\na2: %.3f\n", a1, a2);
-    NumCpp<float> row = a[1];
+    printf("\na1: %.3f\na2: %.3f\n", a1, a2);
+    NF row = a[1];
     row.disp("row?");
 }
 void test_ops(void)
