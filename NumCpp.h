@@ -47,6 +47,7 @@ private:
     static bool _op_gre(T a, T b) { return _op_les(b, a); }
     static bool _op_equ(T a, T b) { return !_op_neq(a, b); }
 
+    bool _check_null(void);
     bool _check_null(const T *src, uint32_t *shape, uint32_t dims);
     bool _check_shape(const NumCpp *b);
 
@@ -97,8 +98,9 @@ public:
 
     /** Operators and math */
     NumCpp &operator=(const NumCpp &other);
-    T operator[](const loc_t);
+
     NumCpp &operator[](const uint32_t);
+    T operator[](const loc_t);
 
     /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }

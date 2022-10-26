@@ -137,6 +137,11 @@ void NumCpp<T>::_insert(T val, uint32_t offset)
 }
 
 template <class T>
+bool NumCpp<T>::_check_null(void)
+{
+    return (this->_data != NULL && this->_shape != NULL && this->_dims != 0);
+}
+template <class T>
 bool NumCpp<T>::_check_null(const T *src, uint32_t *shape, uint32_t dims)
 {
     return (src != NULL && shape != NULL && dims != 0);
@@ -161,7 +166,8 @@ template <class T>
 NumCpp<T> NumCpp<T>::_op_cfun(const T b, T (*fun)(T, T))
 {
 
-    if (!_check_null(this->_data, this->_shape, this->_dims))
+    // if (!_check_null(this->_data, this->_shape, this->_dims))
+    if (!this->_check_null())
     {
         LOG(WARN, "Null check failed on a");
         return *this;
