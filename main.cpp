@@ -67,7 +67,6 @@ void test_reshaping(void)
     t4.disp("transpose 4");
     t5.disp("transpose 5");
 }
-
 void test_predefs_mxnx(void)
 {
     uint32_t s_shape[] = {3, 3};    // square
@@ -264,9 +263,41 @@ void test_ops(void)
     ab5.disp("ab5 = a > b");
     ab6.disp("ab6 = a < b");
 }
+void example(void)
+{
+    NumCpp<float> a = NumCpp<float>::ones(3);                             // 3x3 array with ones
+    NumCpp<float> b = NumCpp<float>::linspace(0.f, 9.f, 9).reshape(3, 3); // reshape 9 elements to 3x3 array
+    a.disp("a");                                                          // display the arrays
+    b.disp("b");                                                          // display the arrays
+    NumCpp<float> c, d;
+    c = a + b; // Ok
+    c.disp("c = a + b");
+    c = a - b; // Ok
+    c.disp("c = a - b");
+    c = a * b; // Ok
+    c.disp("c = a * b");
+    c = a / b; // Ok
+    c.disp("c = a / b");
 
+    d = a + 3.f; // Ok
+    d = a - 3.f; // Ok
+    d = a * 3.f; // Ok
+    d = a / 3.f; // Ok
+    // d = 3.f + a; // not supported
+
+    NumCpp<float> e = NF(b).trans();   // Copy b and transpose
+    NumCpp<float> f = NF(e).flatten(); // Copy e and flatten to 1d
+    e.disp("e");
+    f.disp("f");
+
+    NumCpp<float> g = a / b < .3f; // create a mask where elements of a/b are smaller than 0.3
+    g.disp("g");
+    NumCpp<float> h = b * g; // apply mask g to a
+    h.disp("h");
+}
 int main()
 {
+    example();
     test_access();
     test_ops();
     test_reshaping();
