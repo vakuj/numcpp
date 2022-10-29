@@ -136,15 +136,24 @@ public:
      * -> operator=
      */
     /** TODO implemention */
+    bool any(const T = 1);
+    bool all(const T = 1);
     NumCpp(const char *);
     bool save(const char *file);
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
-    bool any(const T);
-    bool all(const T);
     T sum(void);
     NumCpp sum(uint32_t dim);
     NumCpp cumsum(void);
+    T max(void);
+    T ave(void);
+    T min(void);
+    loc_t arg_max(void);
+    loc_t arg_ave(void);
+    loc_t arg_min(void);
+    loc_t *arg_max(const uin32_t cnt = 1);
+    loc_t *arg_ave(const uin32_t cnt = 1);
+    loc_t *arg_min(const uin32_t cnt = 1);
     NumCpp sin(void);
     NumCpp cos(void);
     NumCpp asin(void);
@@ -202,15 +211,16 @@ NumCpp<T>::NumCpp(const T *src, uint32_t *s_shape, uint32_t s_dims)
     this->_size = s_size;
 }
 
-#include "NumCpp_predefs.h"
-#include "NumCpp_private.h"
-
 template <class T>
 NumCpp<T>::~NumCpp()
 {
     free(_data);
     free(_shape);
 }
+
+#include "NumCpp_predefs.h"
+#include "NumCpp_private.h"
+
 /** [PUBLIC] */
 template <class T>
 void NumCpp<T>::disp(const char *msg)
