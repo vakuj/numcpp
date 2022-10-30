@@ -6,7 +6,7 @@
 #include <cfloat>
 
 #include "NumCpp.h"
-#include "NumCpp_defs.h"
+#include "NumCpp_helpers.h"
 
 #include "logger.cpp"
 
