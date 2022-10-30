@@ -60,7 +60,7 @@ See file [example_output.txt](example/example_output.txt) for output from `disp`
 Already tired of typing `NumCpp<float>`? Try adding `#include "include/NumCpp_helpers.h"`. Now every `NumCpp<float>` can be replaced `NF`. [NumCpp_helpers.h](include/NumCpp_helpers.h) includes other macros as well. The above example can be rewritten as
 
 ```c++
-#include "NumCpp_defs.h"
+#include "include/NumCpp_helpers.h"
 ...
     NF a = NF_ONES(3,3); 
     NF b = NF_LINSPACE(0.f, 9.f, 9).reshape(3, 3);
