@@ -102,6 +102,15 @@ public:
     NumCpp &operator[](const uint32_t);
     T operator[](const loc_t);
 
+    bool any(const T = 1);
+    bool all(const T = 1);
+
+    T sum(void);
+    T ave(void);
+    T max(void);
+    T min(void);
+    NumCpp cumsum(void);
+
     /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }
     NumCpp operator-(const NumCpp &b) { return _op_nfun(b, &_op_sub); }
@@ -136,23 +145,14 @@ public:
      * -> operator=
      */
     /** TODO implemention */
-    bool any(const T = 1);
-    bool all(const T = 1);
     NumCpp(const char *);
     bool save(const char *file);
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
-    T sum(void);
     NumCpp sum(uint32_t dim);
-    NumCpp cumsum(void);
-    T max(void);
-    T ave(void);
-    T min(void);
     loc_t arg_max(void);
-    loc_t arg_ave(void);
     loc_t arg_min(void);
     loc_t *arg_max(const uint32_t cnt = 1);
-    loc_t *arg_ave(const uint32_t cnt = 1);
     loc_t *arg_min(const uint32_t cnt = 1);
     NumCpp sin(void);
     NumCpp cos(void);
@@ -160,11 +160,11 @@ public:
     NumCpp acos(void);
     NumCpp abs(void);
     NumCpp sqrt(void);
+    NumCpp det(void);
+    NumCpp norm(void);
+    NumCpp inv(void);
     NumCpp dot(const NumCpp a, const NumCpp b);
     NumCpp matmul(const NumCpp a, const NumCpp b);
-    NumCpp det(const NumCpp a, const NumCpp b);
-    NumCpp norm(const NumCpp a, const NumCpp b);
-    NumCpp inv(const NumCpp a, const NumCpp b);
     NumCpp &operator+=(const NumCpp &);
     NumCpp &operator-=(const NumCpp &);
     NumCpp &operator*=(const NumCpp &);
