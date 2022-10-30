@@ -53,11 +53,11 @@ To demonstrate:
     h.disp("h");
 
 ```
-See file [example_output.txt](example_output.txt) for output from `disp`.
+See file [example_output.txt](example/example_output.txt) for output from `disp`.
 
 `<float>` can be exchanged to any numerical type, that is, `<int32_t>`, `<uint8_t>` etc. No testing has been made for other than `<float>`.
 
-Already tired of typing `NumCpp<float>`? Try adding `#include NumCpp_helpers.h`. Now every `NumCpp<float>` can be replaced `NF`. [NumCpp_helpers.h](NumCpp_helpers.h) includes other macros as well. The above example can be rewritten as
+Already tired of typing `NumCpp<float>`? Try adding `#include "include/NumCpp_helpers.h"`. Now every `NumCpp<float>` can be replaced `NF`. [NumCpp_helpers.h](include/NumCpp_helpers.h) includes other macros as well. The above example can be rewritten as
 
 ```c++
 #include "NumCpp_defs.h"

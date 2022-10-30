@@ -5,10 +5,10 @@
 #include <cstdint>
 #include <cfloat>
 
-#include "NumCpp.h"
-#include "NumCpp_helpers.h"
+#include "include/NumCpp.h"
+#include "include/NumCpp_helpers.h"
 
-#include "logger.cpp"
+#include "extra/logger.cpp"
 
 using namespace std;
 
