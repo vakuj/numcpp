@@ -10,9 +10,9 @@ Ever heard of or used NumPy? This is heavily inspired by just that. But written 
 
 Ehm... for funsies..? I wanted to learn some C++ and this idea came to mind.  
 
-## But surely there must well established C++ libraries for these functions already?
+## But is it novel?
 
-Yes, very likely. But part of the fun is to try figuring out how it works in the background. 
+No, likely not. Probably reinventing the wheel here, but part of the fun is to try figuring out how it works in the background. No spoilers, please :) 
 
 
 ## Ok, what can it do?
@@ -57,7 +57,7 @@ See file [example_output.txt](example_output.txt) for output from `disp`.
 
 `<float>` can be exchanged to any numerical type, that is, `<int32_t>`, `<uint8_t>` etc. No testing has been made for other than `<float>`.
 
-Already tired of typing `NumCpp<float>`? Try adding `#include NumCpp_defs.h`. Now every `NumCpp<float>` can be replaced `NF`. [NumCpp_defs.h](NumCpp_defs.h) includes other macros as well. The above example can be rewritten as
+Already tired of typing `NumCpp<float>`? Try adding `#include NumCpp_helpers.h`. Now every `NumCpp<float>` can be replaced `NF`. [NumCpp_helpers.h](NumCpp_helpers.h) includes other macros as well. The above example can be rewritten as
 
 ```c++
 #include "NumCpp_defs.h"
@@ -82,7 +82,7 @@ Don't like it or something missing? Create your own macros easily!
 
 ## Is it stable? 
 
-Define "stable"? No rigorous testing has been made, but it *feels correct* :) 
+Define "stable"? No rigorous testing has been made, but it *feels* correct :) 
 
 ## Release schedule
 
@@ -102,24 +102,22 @@ Nothing scheduled. Most progress probably on weekends if there is time to spare.
     bool save(const char *file);
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
-    bool any(const T);
-    bool all(const T);
     T sum(void);
     NumCpp sum(uint32_t dim);
-    NumCpp mean(uint32_t dim);
-    NumCpp max(uint32_t dim);
-    NumCpp min(uint32_t dim);
-    NumCpp argmax(uint32_t dim);
-    NumCpp argmin(uint32_t dim);
     NumCpp cumsum(void);
+    T max(void);
+    T ave(void);
+    T min(void);
+    loc_t arg_max(void);
+    loc_t arg_ave(void);
+    loc_t arg_min(void);
+    loc_t *arg_max(const uint32_t cnt = 1);
+    loc_t *arg_ave(const uint32_t cnt = 1);
+    loc_t *arg_min(const uint32_t cnt = 1);
     NumCpp sin(void);
     NumCpp cos(void);
     NumCpp asin(void);
     NumCpp acos(void);
-    NumCpp &sin(const NumCpp phi);
-    NumCpp &cos(const NumCpp phi);
-    NumCpp &asin(const NumCpp phi);
-    NumCpp &acos(const NumCpp phi);
     NumCpp abs(void);
     NumCpp sqrt(void);
     NumCpp dot(const NumCpp a, const NumCpp b);
