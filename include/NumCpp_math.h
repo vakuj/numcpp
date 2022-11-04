@@ -115,3 +115,31 @@ uint32_t NumCpp<T>::arg_min(void)
 {
     return this->find(this->min());
 }
+template <class T>
+uint32_t *NumCpp<T>::find(const T val, const uint32_t cnt)
+{
+    if (!this->_check_null())
+        return NULL;
+    if (cnt == 0)
+        return NULL;
+    uint32_t *ret = (uint32_t *)calloc(cnt, sizeof(uint32_t));
+    if (cnt == 1)
+    {
+        ret[0] = this->find(val);
+        return ret;
+    }
+    uint32_t ctr = 0;
+    for (uint32_t i = 0; i < this->_size; ++i)
+    {
+        if (this->_data[i] == val)
+            ret[ctr++] = i;
+
+        if (ctr >= cnt)
+            break;
+    }
+    while (ctr < cnt)
+    {
+        ret[ctr++] = this->_size + 1;
+    }
+    return ret;
+}
