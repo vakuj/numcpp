@@ -263,6 +263,19 @@ void test_ops(void)
     ab5.disp("ab5 = a > b");
     ab6.disp("ab6 = a < b");
 }
+void test_math(void)
+{
+    NF a = NF_LINSPACE(0, 9, 9);
+    a.disp("linear array a");
+
+    float asum = a.sum();
+    float amax = a.max();
+    float amin = a.min();
+    printf("sum of a: %.3f\nmax of a: %.3f\nmin of a: %.3f\n", asum, amax, amin);
+
+    NF b = NF(a).cumsum();
+    b.disp("summed a");
+}
 void example(void)
 {
     NumCpp<float> a = NumCpp<float>::ones(3);                             // 3x3 array with ones
@@ -297,13 +310,14 @@ void example(void)
 }
 int main()
 {
-    example();
-    test_access();
-    test_ops();
-    test_reshaping();
-    test_predefs_mxnx1();
-    test_predefs_mxnx();
-    test_predefs_nxn();
-    test_predefs_1xn();
+    test_math();
+    // example();
+    // test_access();
+    // test_ops();
+    // test_reshaping();
+    // test_predefs_mxnx1();
+    // test_predefs_mxnx();
+    // test_predefs_nxn();
+    // test_predefs_1xn();
     return 0;
 }
