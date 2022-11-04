@@ -111,6 +111,10 @@ public:
     T min(void);
     NumCpp cumsum(void);
 
+    uint32_t arg_max(void);
+    uint32_t arg_min(void);
+    uint32_t find(const T);
+
     /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }
     NumCpp operator-(const NumCpp &b) { return _op_nfun(b, &_op_sub); }
@@ -150,10 +154,11 @@ public:
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
     NumCpp sum(uint32_t dim);
-    loc_t arg_max(void);
-    loc_t arg_min(void);
-    loc_t *arg_max(const uint32_t cnt = 1);
-    loc_t *arg_min(const uint32_t cnt = 1);
+    uint32_t *arg_max(const uint32_t cnt = 1);
+    uint32_t *arg_min(const uint32_t cnt = 1);
+    uint32_t *find(const T, const uint32_t cnt = 1);
+    loc_t coord(const uint32_t index);
+    loc_t *coord(uint32_t *index, const uint32_t len);
     NumCpp sin(void);
     NumCpp cos(void);
     NumCpp asin(void);

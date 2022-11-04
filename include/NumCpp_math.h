@@ -78,12 +78,11 @@ T NumCpp<T>::min(void)
     }
     return val;
 }
-
 template <class T>
 NumCpp<T> NumCpp<T>::cumsum(void)
 {
-    NumCpp<T> ret = NumCpp<T>(this);
-    if (this->_check_null())
+    NumCpp<T> ret = NumCpp<T>(*this);
+    if (!this->_check_null())
         return ret;
     T val = 0;
     for (uint32_t i = 0; i < this->_size; ++i)
@@ -92,4 +91,27 @@ NumCpp<T> NumCpp<T>::cumsum(void)
         ret._data[i] = val;
     }
     return ret;
+}
+
+template <class T>
+uint32_t NumCpp<T>::find(const T val)
+{
+    if (!this->_check_null())
+        return 0;
+    for (uint32_t i = 0; i < this->_size; ++i)
+    {
+        if (this->_data[i] == val)
+            return i;
+    }
+    return this->_size + 1;
+}
+template <class T>
+uint32_t NumCpp<T>::arg_max(void)
+{
+    return this->find(this->max());
+}
+template <class T>
+uint32_t NumCpp<T>::arg_min(void)
+{
+    return this->find(this->min());
 }
