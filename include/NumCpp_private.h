@@ -67,11 +67,6 @@ void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
 }
 
 template <class T>
-bool NumCpp<T>::_inside_bound(const uint32_t loc)
-{
-    return loc < this->_size;
-}
-template <class T>
 bool NumCpp<T>::_inside_bound(const loc_t loc)
 {
     if (this->_dims != 2)

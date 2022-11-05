@@ -28,7 +28,7 @@ private:
 
     void _insert(const T, uint32_t offset);
 
-    bool _inside_bound(const uint32_t);
+    bool _inside_bound(const uint32_t index) { return index < this->_size; }
     bool _inside_bound(const loc_t);
     bool _inside_bound(const uint32_t *, const uint32_t);
 
@@ -119,6 +119,9 @@ public:
     uint32_t *arg_max(const uint32_t cnt);
     uint32_t *arg_min(const uint32_t cnt);
 
+    loc_t coord(const uint32_t index);
+    loc_t *coord(uint32_t *index, const uint32_t len);
+
     /** arithmetic NumCpp to NumCpp */
     NumCpp operator+(const NumCpp &b) { return _op_nfun(b, &_op_add); }
     NumCpp operator-(const NumCpp &b) { return _op_nfun(b, &_op_sub); }
@@ -158,8 +161,6 @@ public:
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
     NumCpp sum(uint32_t dim);
-    loc_t coord(const uint32_t index);
-    loc_t *coord(uint32_t *index, const uint32_t len);
     NumCpp sin(void);
     NumCpp cos(void);
     NumCpp asin(void);
