@@ -42,9 +42,9 @@ private:
     static T _op_div(T a, T b) { return a / b; }
     static bool _op_neq(T a, T b) { return a != b; }
     static bool _op_leq(T a, T b) { return a <= b; }
-    static bool _op_les(T a, T b) { return a < b; }
+    static bool _op_lt(T a, T b) { return a < b; }
     static bool _op_geq(T a, T b) { return _op_leq(b, a); }
-    static bool _op_gre(T a, T b) { return _op_les(b, a); }
+    static bool _op_gt(T a, T b) { return _op_lt(b, a); }
     static bool _op_equ(T a, T b) { return !_op_neq(a, b); }
 
     bool _check_null(void);
@@ -59,7 +59,7 @@ public:
     ~NumCpp();
 
     /** shapes and size of data */
-    const uint32_t *shape(void) { return (const uint32_t *)_shape; }
+    const uint32_t *shape(void) { return _shape; }
     uint32_t dims(void) { return _dims; }
     uint32_t size(void) { return _size; }
 
@@ -139,16 +139,16 @@ public:
     NumCpp operator!=(const NumCpp &b) { return _op_nlogic(b, &_op_neq); }
     NumCpp operator<=(const NumCpp &b) { return _op_nlogic(b, &_op_leq); }
     NumCpp operator>=(const NumCpp &b) { return _op_nlogic(b, &_op_geq); }
-    NumCpp operator<(const NumCpp &b) { return _op_nlogic(b, &_op_les); }
-    NumCpp operator>(const NumCpp &b) { return _op_nlogic(b, &_op_gre); }
+    NumCpp operator<(const NumCpp &b) { return _op_nlogic(b, &_op_lt); }
+    NumCpp operator>(const NumCpp &b) { return _op_nlogic(b, &_op_gt); }
 
     /** comparison NumCpp to T */
     NumCpp operator==(const T b) { return _op_clogic(b, &_op_equ); }
     NumCpp operator!=(const T b) { return _op_clogic(b, &_op_neq); }
     NumCpp operator<=(const T b) { return _op_clogic(b, &_op_leq); }
     NumCpp operator>=(const T b) { return _op_clogic(b, &_op_geq); }
-    NumCpp operator<(const T b) { return _op_clogic(b, &_op_les); }
-    NumCpp operator>(const T b) { return _op_clogic(b, &_op_gre); }
+    NumCpp operator<(const T b) { return _op_clogic(b, &_op_lt); }
+    NumCpp operator>(const T b) { return _op_clogic(b, &_op_gt); }
     /** END Operators and math */
 
     /** TODO check functionality:
