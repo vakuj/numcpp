@@ -275,6 +275,22 @@ void test_math(void)
 
     NF b = NF(a).cumsum();
     b.disp("summed a");
+
+    NF c = NF_DIAG(4);
+    c.disp("c");
+
+#define COUNT 16
+
+    uint32_t max1 = c.arg_max();
+    uint32_t min1 = c.arg_min();
+    uint32_t *max2 = c.arg_max(COUNT);
+    uint32_t *min2 = c.arg_min(COUNT);
+    printf("\nFist ind: %3d, %3d\n", max1, min1);
+    printf("ind max min\n");
+    for (uint32_t i = 0; i < COUNT; ++i)
+    {
+        printf("%3d %3d %3d\n", i, max2[i], min2[i]);
+    }
 }
 void example(void)
 {
