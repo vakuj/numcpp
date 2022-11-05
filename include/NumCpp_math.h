@@ -143,3 +143,23 @@ uint32_t *NumCpp<T>::find(const T val, const uint32_t cnt)
     }
     return ret;
 }
+template <class T>
+uint32_t *NumCpp<T>::arg_max(const uint32_t cnt)
+{
+    if (!this->_check_null())
+        return NULL;
+    if (cnt == 0)
+        return NULL;
+
+    return this->find(this->max(), cnt);
+}
+template <class T>
+uint32_t *NumCpp<T>::arg_min(const uint32_t cnt)
+{
+    if (!this->_check_null())
+        return NULL;
+    if (cnt == 0)
+        return NULL;
+
+    return this->find(this->min(), cnt);
+}
