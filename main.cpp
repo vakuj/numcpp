@@ -277,20 +277,35 @@ void test_math(void)
     b.disp("summed a");
 
     NF c = NF_DIAG(4);
+    // NF c = NF_LINSPACE(0, 9, 9).reshape(3, 3);
+
     c.disp("c");
 
-#define COUNT 16
+#define COUNT 4
 
     uint32_t max1 = c.arg_max();
     uint32_t min1 = c.arg_min();
     uint32_t *max2 = c.arg_max(COUNT);
     uint32_t *min2 = c.arg_min(COUNT);
-    printf("\nFist ind: %3d, %3d\n", max1, min1);
+    printf("First ind: %3d, %3d\n", max1, min1);
     printf("ind max min\n");
     for (uint32_t i = 0; i < COUNT; ++i)
     {
         printf("%3d %3d %3d\n", i, max2[i], min2[i]);
     }
+    loc_t l1 = c.coord(max1);
+    loc_t l2 = c.coord(min1);
+    printf("max (row,col): (%3d, %3d)\n", l1.row, l1.col);
+    printf("min (row,col): (%3d, %3d)\n", l2.row, l2.col);
+    loc_t *ll1 = c.coord(max2, COUNT);
+    loc_t *ll2 = c.coord(min2, COUNT);
+    for (uint32_t i = 0; i < COUNT; ++i)
+    {
+        printf("%3d th max (row,col): (%3d, %3d)\n", i, ll1[i].row, ll1[i].col);
+        printf("%3d th min (row,col): (%3d, %3d)\n", i, ll2[i].row, ll2[i].col);
+    }
+    free(ll1);
+    free(ll2);
 }
 void example(void)
 {
