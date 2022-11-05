@@ -163,3 +163,52 @@ uint32_t *NumCpp<T>::arg_min(const uint32_t cnt)
 
     return this->find(this->min(), cnt);
 }
+
+template <class T>
+loc_t NumCpp<T>::coord(const uint32_t index)
+{
+    loc_t ret = {0, 0};
+    if (!this->_check_null())
+    {
+        LOG(ERROR, "this is NULL");
+        return ret;
+    }
+    if (!this->_inside_bound(index))
+    {
+        LOG(ERROR, "Index out-of-bounds");
+        return ret;
+    }
+    if (this->_dims != 2)
+    {
+        LOG(ERROR, "Shape not compatible with 2D location");
+        return ret;
+    }
+    ret.row = index / this->_shape[0];
+    if (ret.row == 0)
+        ret.col = index;
+    else
+        ret.col = (index - ret.row * this->_shape[0]);
+    return ret;
+}
+template <class T>
+loc_t *NumCpp<T>::coord(uint32_t *index, const uint32_t len)
+{
+    if (len == 0)
+        return NULL;
+    if (!this->_check_null())
+    {
+        LOG(ERROR, "this is NULL");
+        return NULL;
+    }
+    if (this->_dims != 2)
+    {
+        LOG(ERROR, "Shape not compatible with 2D location");
+        return NULL;
+    }
+    loc_t *ret = (loc_t *)calloc(len, sizeof(loc_t));
+    for (uint32_t i = 0; i < len; ++i)
+    {
+        ret[i] = this->coord(index[i]);
+    }
+    return ret;
+}
