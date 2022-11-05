@@ -103,10 +103,6 @@ Nothing scheduled. Most progress probably on weekends if there is time to spare.
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
     NumCpp sum(uint32_t dim);
-    loc_t arg_max(void);
-    loc_t arg_min(void);
-    loc_t *arg_max(const uint32_t cnt = 1);
-    loc_t *arg_min(const uint32_t cnt = 1);
     NumCpp sin(void);
     NumCpp cos(void);
     NumCpp asin(void);
