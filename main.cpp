@@ -307,6 +307,18 @@ void test_math(void)
     free(ll1);
     free(ll2);
 }
+void test_assert(void)
+{
+    NF a = NF_LINSPACE(0, 9, 9);
+    NF b = NF_LINSPACE(0, 9, 9);
+
+    ASSERT_SIZE(a, b);
+    ASSERT_SHAPE(a, b);
+    ASSERT_DIMS(a, b);
+    ASSERT_MEMORY(a, b);
+    ASSERT_EMPTY(a);
+}
+
 void example(void)
 {
     NumCpp<float> a = NumCpp<float>::ones(3);                             // 3x3 array with ones
@@ -341,7 +353,8 @@ void example(void)
 }
 int main()
 {
-    test_math();
+    test_assert();
+    // test_math();
     // example();
     // test_access();
     // test_ops();
