@@ -97,9 +97,9 @@ public:
     /** END predefs */
 
     /** assertions */
-    static bool assert_empty(const NumCpp);
-    static bool assert_size(const NumCpp, const NumCpp);
-    static bool assert_dims(const NumCpp, const NumCpp);
+    static bool assert_empty(const NumCpp self) { return self._data == NULL; }
+    static bool assert_size(const NumCpp self, const NumCpp ref) { return self._size == ref._size; }
+    static bool assert_dims(const NumCpp self, const NumCpp ref) { return self._dims == ref._dims; }
     static bool assert_shape(const NumCpp, const NumCpp);
     static bool assert_memory(const NumCpp, const NumCpp);
     static void assert_check(bool, const char *, const char *, int, const char *);
@@ -191,10 +191,10 @@ public:
 template <class T>
 NumCpp<T>::NumCpp()
 {
-    this->_data = nullptr;
+    this->_data = NULL;
     this->_dims = 0;
     this->_size = 0;
-    this->_shape = nullptr;
+    this->_shape = NULL;
 }
 template <class T>
 NumCpp<T>::NumCpp(uint32_t *s_shape, uint32_t s_dims)

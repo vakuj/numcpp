@@ -2,30 +2,33 @@
 #include <cassert>
 
 template <class T>
-bool NumCpp<T>::assert_size(const NumCpp<T> self, const NumCpp<T> ref)
-{
-    return false;
-}
-template <class T>
-bool NumCpp<T>::assert_dims(const NumCpp<T> self, const NumCpp<T> ref)
-{
-    return false;
-}
-template <class T>
 bool NumCpp<T>::assert_shape(const NumCpp<T> self, const NumCpp<T> ref)
 {
-    return false;
+    if (!assert_dims(self, ref))
+        return false;
+    for (uint32_t i = 0; i < self._dims; ++i)
+    {
+        if (self._shape[i] != ref._shape[i])
+            return false;
+    }
+    return true;
 }
 template <class T>
 bool NumCpp<T>::assert_memory(const NumCpp<T> self, const NumCpp<T> ref)
 {
-    return false;
-}
-template <class T>
-bool NumCpp<T>::assert_empty(const NumCpp<T> self)
-{
+    if (assert_empty(self))
+        return false;
+    if (assert_empty(ref))
+        return false;
+    if (!assert_size(self, ref))
+        return false;
 
-    return false;
+    for (uint32_t i = 0; i < self._size; ++i)
+    {
+        if (self._data[i] != ref._data[i])
+            return false;
+    }
+    return true;
 }
 template <class T>
 void NumCpp<T>::assert_check(bool expr, const char *file, const char *func, int line, const char *msg)
@@ -35,6 +38,8 @@ void NumCpp<T>::assert_check(bool expr, const char *file, const char *func, int 
         printf("[Assertion failed] %s:%s:%03d: %s\n", file, func, line, msg);
         // abort();
     }
+    else
+        printf("[Assertion passed] %s:%s:%03d\n", file, func, line);
 }
 
 #define ASSERT_SIZE(_self, _ref) NumCpp<float>::assert_check(NumCpp<float>::assert_size(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_size must match")
