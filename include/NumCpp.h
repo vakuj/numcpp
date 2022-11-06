@@ -103,9 +103,6 @@ public:
     static bool assert_shape(const NumCpp, const NumCpp);
     static bool assert_memory(const NumCpp, const NumCpp);
     static void assert_check(bool, const char *, const char *, int, const char *);
-    // static void assert_chk(bool);
-
-    // #define ASSERT_SIZE(_self, _ref) NumCpp::assert_check(NumCpp::assert_size(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "")
 
     /** Operators and math */
     NumCpp &operator=(const NumCpp &other);

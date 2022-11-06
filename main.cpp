@@ -310,13 +310,13 @@ void test_math(void)
 void test_assert(void)
 {
     NF a = NF_LINSPACE(0, 9, 9);
-    NF b = NF_LINSPACE(0, 9, 9);
+    NF b = NF_LINSPACE(0, 9, 9).reshape(3, 3);
 
-    ASSERT_SIZE(a, b);
-    ASSERT_SHAPE(a, b);
-    ASSERT_DIMS(a, b);
-    ASSERT_MEMORY(a, b);
-    ASSERT_EMPTY(a);
+    ASSERT_SIZE(a, b);   // Pass
+    ASSERT_SHAPE(a, b);  // Fail
+    ASSERT_DIMS(a, b);   // Fail
+    ASSERT_MEMORY(a, b); // Pass
+    ASSERT_EMPTY(a);     // Fail
 }
 
 void example(void)
