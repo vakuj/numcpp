@@ -311,11 +311,17 @@ void test_assert(void)
 {
     NF a = NF_LINSPACE(0, 9, 9);
     NF b = NF_LINSPACE(0, 9, 9).reshape(3, 3);
+    NF c = NF_LINSPACE(1, 10, 9);
+    NF d = a + 1.0;
 
     ASSERT_SIZE(a, b);   // Pass
     ASSERT_SHAPE(a, b);  // Fail
+    ASSERT_SHAPE(c, d);  // Pass
     ASSERT_DIMS(a, b);   // Fail
+    ASSERT_DIMS(c, d);   // Pass
     ASSERT_MEMORY(a, b); // Pass
+    ASSERT_MEMORY(a, c); // Fail
+    ASSERT_MEMORY(c, d); // Pass
     ASSERT_EMPTY(a);     // Fail
 }
 
