@@ -96,6 +96,17 @@ public:
     static NumCpp linspace(const T v0, const T v1, const uint32_t n);
     /** END predefs */
 
+    /** assertions */
+    static bool assert_empty(const NumCpp);
+    static bool assert_size(const NumCpp, const NumCpp);
+    static bool assert_dims(const NumCpp, const NumCpp);
+    static bool assert_shape(const NumCpp, const NumCpp);
+    static bool assert_memory(const NumCpp, const NumCpp);
+    static void assert_check(bool, const char *, const char *, int, const char *);
+    // static void assert_chk(bool);
+
+    // #define ASSERT_SIZE(_self, _ref) NumCpp::assert_check(NumCpp::assert_size(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "")
+
     /** Operators and math */
     NumCpp &operator=(const NumCpp &other);
 
@@ -229,6 +240,7 @@ NumCpp<T>::~NumCpp()
 #include "NumCpp_private.h"
 #include "NumCpp_math.h"
 #include "NumCpp_stream.h"
+#include "NumCpp_assert.h"
 
 /** [PUBLIC] */
 template <class T>
