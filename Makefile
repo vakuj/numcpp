@@ -1,6 +1,6 @@
 CC=g++
 STD=-std=c++11
-CFLAGS=-g -Wall -Wextra -Wconversion -pedantic -D DEBUG
+CFLAGS=-g -Wall -Wextra -Wconversion -pedantic -fsanitize=address -D DEBUG
 SRC=main.cpp logger.cpp
 HDRS=include/NumCpp.h 
 OBJ=main.o 
