@@ -195,8 +195,9 @@ void test_access(void)
     float a1 = a[{1, 0}];
     float a2 = a[loc];
     printf("\na1: %.3f\na2: %.3f\n", a1, a2);
-    NF row = a[1];
+    NF &row = a[1];
     row.disp("row?");
+    delete &row;
 }
 void test_ops(void)
 {
@@ -304,6 +305,8 @@ void test_math(void)
         printf("%3d th max (row,col): (%3d, %3d)\n", i, ll1[i].row, ll1[i].col);
         printf("%3d th min (row,col): (%3d, %3d)\n", i, ll2[i].row, ll2[i].col);
     }
+    free(max2);
+    free(min2);
     free(ll1);
     free(ll2);
 }
@@ -360,14 +363,14 @@ void example(void)
 int main()
 {
     test_assert();
-    // test_math();
-    // example();
-    // test_access();
-    // test_ops();
-    // test_reshaping();
-    // test_predefs_mxnx1();
-    // test_predefs_mxnx();
-    // test_predefs_nxn();
-    // test_predefs_1xn();
+    test_math();
+    example();
+    test_access();
+    test_ops();
+    test_reshaping();
+    test_predefs_mxnx1();
+    test_predefs_mxnx();
+    test_predefs_nxn();
+    test_predefs_1xn();
     return 0;
 }
