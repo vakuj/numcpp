@@ -317,6 +317,7 @@ void test_assert(void)
     NF c = NF_LINSPACE(1, 10, 9);
     NF d = a + 1.0;
 
+    /** Soft checking: Does not abort if failed */
     ASSERT_SIZE(a, b);   // Pass
     ASSERT_SHAPE(a, b);  // Fail
     ASSERT_SHAPE(c, d);  // Pass
@@ -326,6 +327,17 @@ void test_assert(void)
     ASSERT_MEMORY(a, c); // Fail
     ASSERT_MEMORY(c, d); // Pass
     ASSERT_EMPTY(a);     // Fail
+
+    /** Hard checking: Must pass to continue */
+    XPASS_SIZE(a, b);   // Pass
+    XFAIL_SHAPE(a, b);  // Pass
+    XPASS_SHAPE(c, d);  // Pass
+    XFAIL_DIMS(a, b);   // Pass
+    XPASS_DIMS(c, d);   // Pass
+    XPASS_MEMORY(a, b); // Pass
+    XFAIL_MEMORY(a, c); // Pass
+    XPASS_MEMORY(c, d); // Pass
+    XFAIL_EMPTY(a);     // Pass
 }
 
 void example(void)
@@ -363,14 +375,14 @@ void example(void)
 int main()
 {
     test_assert();
-    test_math();
-    example();
-    test_access();
-    test_ops();
-    test_reshaping();
-    test_predefs_mxnx1();
-    test_predefs_mxnx();
-    test_predefs_nxn();
-    test_predefs_1xn();
+    // test_math();
+    // example();
+    // test_access();
+    // test_ops();
+    // test_reshaping();
+    // test_predefs_mxnx1();
+    // test_predefs_mxnx();
+    // test_predefs_nxn();
+    // test_predefs_1xn();
     return 0;
 }

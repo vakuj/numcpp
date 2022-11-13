@@ -103,7 +103,8 @@ public:
     static bool assert_shape(const NumCpp, const NumCpp);
     static bool assert_memory(const NumCpp, const NumCpp);
     static void assert_check(bool, const char *, const char *, int, const char *);
-
+    static void xpass(bool, const char *, const char *, int, const char *);
+    static void xfail(bool, const char *, const char *, int, const char *);
     /** Operators and math */
     NumCpp &operator=(const NumCpp &other);
 
