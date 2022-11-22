@@ -339,7 +339,34 @@ void test_assert(void)
     XPASS_MEMORY(c, d); // Pass
     XFAIL_EMPTY(a);     // Pass
 }
+void test_pre_ops(void)
+{
+    NF a = NF_LINSPACE(1, 10, 9).reshape(3, 3).trans();
+    NF b = NF_LINSPACE(1, 10, 9).reshape(3, 3);
+    NF c = NF_ZERO(3, 3);
+    a.disp("a");
+    b.disp("b");
+    c.disp("c");
 
+    // NF *dst = &c;
+    NF *dst = NF::padd(&c, &a, &b);
+    dst->disp("after padd");
+    dst = NF::psub(dst, &a, &b);
+    dst->disp("after psub");
+    dst = NF::pdiv(dst, &a, &b);
+    dst->disp("after pdiv");
+    dst = NF::pmul(dst, &a, &b);
+    dst->disp("after pmul");
+
+    dst = NF::padd(dst, &a, 3.f);
+    dst->disp("after padd");
+    dst = NF::psub(dst, &a, 3.f);
+    dst->disp("after psub");
+    dst = NF::pdiv(dst, &a, 3.f);
+    dst->disp("after pdiv");
+    dst = NF::pmul(dst, &a, 3.f);
+    dst->disp("after pmul");
+}
 void example(void)
 {
     NumCpp<float> a = NumCpp<float>::ones(3);                             // 3x3 array with ones
@@ -374,7 +401,8 @@ void example(void)
 }
 int main()
 {
-    test_assert();
+    test_pre_ops();
+    // test_assert();
     // test_math();
     // example();
     // test_access();
