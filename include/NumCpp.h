@@ -36,10 +36,16 @@ private:
     NumCpp _op_cfun(const T, T (*fun)(T, T));
     NumCpp _op_nlogic(const NumCpp &, bool (*fun)(T, T));
     NumCpp _op_clogic(const T, bool (*fun)(T, T));
+    static NumCpp *_pre_op_nfun(NumCpp *, NumCpp *, NumCpp *, T (*fun)(T, T));
+    static NumCpp *_pre_op_cfun(NumCpp *, NumCpp *, const T, T (*fun)(T, T));
+    static NumCpp *_pre_op_nlogic(NumCpp *, NumCpp *, NumCpp *, bool (*fun)(T, T));
+    static NumCpp *_pre_op_clogic(NumCpp *, NumCpp *, const T, bool (*fun)(T, T));
+
     static T _op_add(T a, T b) { return a + b; }
     static T _op_sub(T a, T b) { return a - b; }
     static T _op_mul(T a, T b) { return a * b; }
     static T _op_div(T a, T b) { return a / b; }
+
     static bool _op_neq(T a, T b) { return a != b; }
     static bool _op_leq(T a, T b) { return a <= b; }
     static bool _op_lt(T a, T b) { return a < b; }
@@ -105,6 +111,7 @@ public:
     static void assert_check(bool, const char *, const char *, int, const char *);
     static void xpass(bool, const char *, const char *, int, const char *);
     static void xfail(bool, const char *, const char *, int, const char *);
+
     /** Operators and math */
     NumCpp &operator=(const NumCpp &other);
 
@@ -143,6 +150,18 @@ public:
     NumCpp operator*(const T b) { return _op_cfun(b, &_op_mul); }
     NumCpp operator/(const T b) { return _op_cfun(b, &_op_div); }
 
+    /** Pre-allocated arithmetic NumCpp to NumCpp */
+    static NumCpp *padd(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nfun(dst, a, b, &_op_add); }
+    static NumCpp *psub(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nfun(dst, a, b, &_op_sub); }
+    static NumCpp *pmul(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nfun(dst, a, b, &_op_mul); }
+    static NumCpp *pdiv(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nfun(dst, a, b, &_op_div); }
+
+    /** Pre-allocated arithmetic NumCpp to T */
+    static NumCpp *padd(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_cfun(dst, a, b, &_op_add); }
+    static NumCpp *psub(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_cfun(dst, a, b, &_op_sub); }
+    static NumCpp *pmul(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_cfun(dst, a, b, &_op_mul); }
+    static NumCpp *pdiv(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_cfun(dst, a, b, &_op_div); }
+
     /** comparison NumCpp to NumCpp */
     NumCpp operator==(const NumCpp &b) { return _op_nlogic(b, &_op_equ); }
     NumCpp operator!=(const NumCpp &b) { return _op_nlogic(b, &_op_neq); }
@@ -158,6 +177,23 @@ public:
     NumCpp operator>=(const T b) { return _op_clogic(b, &_op_geq); }
     NumCpp operator<(const T b) { return _op_clogic(b, &_op_lt); }
     NumCpp operator>(const T b) { return _op_clogic(b, &_op_gt); }
+
+    /** Pre-allocated comparison NumCpp to NumCpp */
+    static NumCpp *peq(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nlogic(dst, a, b, &_op_equ); }
+    static NumCpp *pneq(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nlogic(dst, a, b, &_op_neq); }
+    static NumCpp *pleq(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nlogic(dst, a, b, &_op_leq); }
+    static NumCpp *pgeq(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nlogic(dst, a, b, &_op_geq); }
+    static NumCpp *plt(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nlogic(dst, a, b, &_op_lt); }
+    static NumCpp *pgt(NumCpp *dst, NumCpp *a, NumCpp *b) { return _pre_op_nlogic(dst, a, b, &_op_gt); }
+
+    /** Pre-allocated comparison NumCpp to T */
+    static NumCpp *peq(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_clogic(dst, a, b, &_op_equ); }
+    static NumCpp *pneq(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_clogic(dst, a, b, &_op_neq); }
+    static NumCpp *pleq(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_clogic(dst, a, b, &_op_leq); }
+    static NumCpp *pgeq(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_clogic(dst, a, b, &_op_geq); }
+    static NumCpp *plt(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_clogic(dst, a, b, &_op_lt); }
+    static NumCpp *pgt(NumCpp *dst, NumCpp *a, const T b) { return _pre_op_cqlogic(dst, a, b, &_op_gt); }
+
     /** END Operators and math */
 
     /** TODO check functionality:

@@ -200,6 +200,45 @@ NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &b, T (*fun)(T, T))
 }
 
 template <class T>
+NumCpp<T> *NumCpp<T>::_pre_op_nfun(NumCpp<T> *dst, NumCpp<T> *a, NumCpp<T> *b, T (*fun)(T, T))
+{
+    if (!dst->_check_null() || !a->_check_null() || !b->_check_null())
+    {
+        LOG(WARN, "Null Check failed for at least one of dst, a or b");
+        return dst;
+    }
+    if (!dst->_check_shape(a) || !a->_check_shape(b))
+    {
+        LOG(WARN, "Shapes of dst, a and/or b not equal");
+        return dst;
+    }
+    for (uint32_t i = 0; i < dst->_size; ++i)
+    {
+        dst->_insert(fun(a->_data[i], b->_data[i]), i);
+    }
+    return dst;
+}
+template <class T>
+NumCpp<T> *NumCpp<T>::_pre_op_cfun(NumCpp<T> *dst, NumCpp<T> *a, const T b, T (*fun)(T, T))
+{
+    if (!dst->_check_null() || !a->_check_null())
+    {
+        LOG(WARN, "Null Check failed for at least one of dst or a");
+        return dst;
+    }
+    if (!dst->_check_shape(a))
+    {
+        LOG(WARN, "Shapes of dst and a not equal");
+        return dst;
+    }
+    for (uint32_t i = 0; i < dst->_size; ++i)
+    {
+        dst->_insert(fun(a->_data[i], b), i);
+    }
+    return dst;
+}
+
+template <class T>
 NumCpp<T> NumCpp<T>::_op_clogic(const T b, bool (*fun)(T, T))
 {
     if (!this->_check_null())
@@ -239,4 +278,43 @@ NumCpp<T> NumCpp<T>::_op_nlogic(const NumCpp<T> &b, bool (*fun)(T, T))
         ret._insert(fun(this->_data[i], b._data[i]) ? (T)1 : (T)0, i);
     }
     return ret;
+}
+
+template <class T>
+NumCpp<T> *NumCpp<T>::_pre_op_nlogic(NumCpp<T> *dst, NumCpp<T> *a, NumCpp<T> *b, bool (*fun)(T, T))
+{
+    if (!dst->_check_null() || !a->_check_null() || !b->_check_null())
+    {
+        LOG(WARN, "Null Check failed for at least one of dst, a or b");
+        return dst;
+    }
+    if (!dst->_check_shape(a) || !a->_check_shape(b))
+    {
+        LOG(WARN, "Shapes of dst, a and/or b not equal");
+        return dst;
+    }
+    for (uint32_t i = 0; i < dst->_size; ++i)
+    {
+        dst->_insert(fun(a->_data[i], b->_data[i]) ? (T)1 : (T)0, i);
+    }
+    return dst;
+}
+template <class T>
+NumCpp<T> *NumCpp<T>::_pre_op_clogic(NumCpp<T> *dst, NumCpp<T> *a, const T b, bool (*fun)(T, T))
+{
+    if (!dst->_check_null() || !a->_check_null())
+    {
+        LOG(WARN, "Null Check failed for at least one of dst or a");
+        return dst;
+    }
+    if (!dst->_check_shape(a))
+    {
+        LOG(WARN, "Shapes of dst and a not equal");
+        return dst;
+    }
+    for (uint32_t i = 0; i < dst->_size; ++i)
+    {
+        dst->_insert(fun(a->_data[i], b) ? (T)1 : (T)0, i);
+    }
+    return dst;
 }
