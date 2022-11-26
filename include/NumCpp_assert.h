@@ -1,6 +1,14 @@
 #include "NumCpp.h"
-#include <cassert>
+// #include <cassert>
 
+/**
+ * @brief Asserts that shape of one object is the same as for the reference object.
+ *        Returns false early if the dims of the same.
+ * @tparam T
+ * @param self the self object
+ * @param ref the reference object
+ * @return true if shapes are the same
+ */
 template <class T>
 bool NumCpp<T>::assert_shape(const NumCpp<T> self, const NumCpp<T> ref)
 {
@@ -13,12 +21,18 @@ bool NumCpp<T>::assert_shape(const NumCpp<T> self, const NumCpp<T> ref)
     }
     return true;
 }
+/**
+ * @brief Asserts that the data content for one object is the same as for the reference object.
+ *        Returns false early if one of the objects are NULL or if not of same same size.
+ * @tparam T
+ * @param self the self object
+ * @param ref the reference object
+ * @return true if the data content is the same
+ */
 template <class T>
 bool NumCpp<T>::assert_memory(const NumCpp<T> self, const NumCpp<T> ref)
 {
-    if (assert_empty(self))
-        return false;
-    if (assert_empty(ref))
+    if (assert_empty(self) || assert_empty(ref))
         return false;
     if (!assert_size(self, ref))
         return false;
@@ -34,7 +48,7 @@ bool NumCpp<T>::assert_memory(const NumCpp<T> self, const NumCpp<T> ref)
  * @brief Checks expr to evaluate assertion. Produces pass/fail message to stdout.
  *        Does NOT abort execution if failed.
  *
- * @tparam T Numeric type, ex. float
+ * @tparam T
  * @param expr Assertion evaluation, false gives failing condition.
  * @param file Indication of location, ex. __FILE__
  * @param func Indication of function, ex. __FUNCTION__
@@ -50,10 +64,10 @@ void NumCpp<T>::assert_check(bool expr, const char *file, const char *func, int 
         printf("[Assertion passed] %s:%s:%03d\n", file, func, line);
 }
 /**
- * @brief Checks expr to if assetion passed. Produces pass/fail message to stdout.
+ * @brief Checks expr if assertion passed. Produces pass/fail message to stdout.
  *        Aborts execution if failed.
  *
- * @tparam T Numeric type, ex. float
+ * @tparam T
  * @param expr Assertion evaluation, false gives failing condition.
  * @param file Indication of location, ex. __FILE__
  * @param func Indication of function, ex. __FUNCTION__
@@ -71,10 +85,10 @@ void NumCpp<T>::xpass(bool expr, const char *file, const char *func, int line, c
     printf("[XPASS passed]: %s:%s:%03d\n", file, func, line);
 }
 /**
- * @brief Checks expr to if assetion passed. Produces pass/fail message to stdout.
+ * @brief Checks expr if assertion passed. Produces pass/fail message to stdout.
  *        Aborts execution if failed.
  *
- * @tparam T Numeric type, ex. float
+ * @tparam T
  * @param expr Assertion evaluation, true gives failing condition.
  * @param file Indication of location, ex. __FILE__
  * @param func Indication of function, ex. __FUNCTION__

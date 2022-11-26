@@ -167,7 +167,7 @@ bool NumCpp<T>::_check_shape(const NumCpp<T> *other)
     return true;
 }
 /**
- * @brief The applies each element of this with constant other using fun.
+ * @brief Applies each element of this with constant other using fun.
  *        Inserts the result of fun in returned data.
  *
  * @tparam T
@@ -191,7 +191,7 @@ NumCpp<T> NumCpp<T>::_op_cfun(const T other, T (*fun)(T, T))
     return ret;
 }
 /**
- * @brief The applies each element of this with correspondig element from other using fun.
+ * @brief Applies each element of this with correspondig element from other using fun.
  *        Inserts the result of fun in returned data.
  *
  * @tparam T
@@ -288,7 +288,7 @@ NumCpp<T> *NumCpp<T>::_pre_op_cfun(NumCpp<T> *dst, NumCpp<T> *a, const T b, T (*
 }
 
 /**
- * @brief The applies each element of this with constant other using fun.
+ * @brief Applies each element of this with constant other using fun.
  *        Inserts the result of fun in returned data, as T equivalent of
  *        1 (true) and 0 (false).
  *
@@ -314,7 +314,7 @@ NumCpp<T> NumCpp<T>::_op_clogic(const T other, bool (*fun)(T, T))
 }
 
 /**
- * @brief The applies each element of this with correspondig element from other using fun.
+ * @brief Applies each element of this with correspondig element from other using fun.
  *        Inserts the result of fun in returned data, as T equivalent of
  *        1 (true) and 0 (false).
  *

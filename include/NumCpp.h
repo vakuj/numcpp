@@ -63,12 +63,17 @@ private:
 
     bool _check_null(void) { return (this->_data != NULL && this->_shape != NULL && this->_dims != 0); }
     bool _check_null(const T *src, uint32_t *shape, uint32_t dims) { return (src != NULL && shape != NULL && dims != 0); }
-    bool _check_shape(const NumCpp *b);
+    bool _check_shape(const NumCpp *other);
 
 public:
     NumCpp();
     NumCpp(uint32_t *, uint32_t);
     NumCpp(const T *, uint32_t *, uint32_t);
+    /**
+     * @brief Construct a new NumCpp object by copy of data from other.
+     *
+     * @param other the one to copy
+     */
     NumCpp(NumCpp const &other) : NumCpp(other._data, other._shape, other._dims) {}
     ~NumCpp();
 
@@ -104,18 +109,41 @@ public:
     /** Predefined data structures */
     /** M x N x ... */
     static NumCpp zero(uint32_t *s_shape, uint32_t s_dims);
-    static NumCpp diag(uint32_t *s_shape, uint32_t s_dims);
     static NumCpp fill(uint32_t *s_shape, uint32_t s_dims, const T val);
+
+    /**
+     * @brief Create n-dimensional data specified by s_shape and s_dims filled with ones.
+     *
+     * @tparam T
+     * @param s_shape the target shape
+     * @param s_dims the target dim, i.e. number of elements in s_shape
+     * @return NumCpp<T> the created n-dimensional data
+     */
     static NumCpp ones(uint32_t *s_shape, uint32_t s_dims) { return NumCpp::fill(s_shape, s_dims, (T)1); }
     /** M x N */
     static NumCpp zero(uint32_t m, uint32_t n);
     static NumCpp diag(uint32_t m, uint32_t n);
     static NumCpp fill(uint32_t m, uint32_t n, const T val);
+    /**
+     * @brief Creates m x n data filled with ones. Failes if m == 0 && n == 0.
+     *
+     * @tparam T
+     * @param m the m size
+     * @param n the n size
+     * @return NumCpp<T> the created m x n data. Empty data if failed.
+     */
     static NumCpp ones(uint32_t m, uint32_t n) { return NumCpp::fill(m, n, (T)1); }
     /** N x N */
     static NumCpp zero(uint32_t n);
     static NumCpp diag(uint32_t n);
     static NumCpp fill(uint32_t n, const T val);
+    /**
+     * @brief Creates n x n data filled with ones. Failes if n == 0.
+     *
+     * @tparam T
+     * @param n the n size
+     * @return NumCpp<T> the created n x n data. Empty data if failed.
+     */
     static NumCpp ones(uint32_t n) { return NumCpp::fill(n, (T)1); }
     /** 1 x N */
     static NumCpp arange(const T v0, const T v1, const T d, const bool end = true);
@@ -123,8 +151,29 @@ public:
     /** END predefs */
 
     /** assertions */
+
+    /**
+     * @brief Assert that the data of the object is NULL.
+     *
+     * @param self the object to check
+     * @return true if data is NULL
+     */
     static bool assert_empty(const NumCpp self) { return self._data == NULL; }
+    /**
+     * @brief Asserts that the size of one object is the same as for the reference object.
+     *
+     * @param self the self object
+     * @param ref the reference object
+     * @return true if sizes are the same
+     */
     static bool assert_size(const NumCpp self, const NumCpp ref) { return self._size == ref._size; }
+    /**
+     * @brief Asserts that the dims of one object is the same as for the reference object.
+     *
+     * @param self the self object
+     * @param ref the reference object
+     * @return true if dims are equal
+     */
     static bool assert_dims(const NumCpp self, const NumCpp ref) { return self._dims == ref._dims; }
     static bool assert_shape(const NumCpp, const NumCpp);
     static bool assert_memory(const NumCpp, const NumCpp);
@@ -133,8 +182,8 @@ public:
     static void xfail(bool, const char *, const char *, int, const char *);
 
     /** Operators and math */
-    NumCpp &operator=(const NumCpp &other);
 
+    NumCpp &operator=(const NumCpp &other);
     NumCpp &operator[](const uint32_t);
     T operator[](const loc_t);
 

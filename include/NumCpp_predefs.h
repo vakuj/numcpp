@@ -1,7 +1,22 @@
-#include <cstdint>
 #include "NumCpp.h"
 
 /** 1 x N */
+
+/**
+ * @brief Creates one dimensional data filled with values from v0
+ *        to (and including) v1 with stepsize d.
+ *        Failes if:
+ *          - v1 == v0
+ *          -  d == 0
+ *          - v1 >  v0 && d < 0
+ *
+ * @tparam T
+ * @param v0 start value of range.
+ * @param v1 end value of range.
+ * @param d stepsize between values in range.
+ * @param end if v1 is included in returnd data. (optional, default true)
+ * @return NumCpp<T> the creaated 1D range. Empty data returned if failed to create range.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::arange(const T v0, const T v1, const T d, const bool end)
 {
@@ -38,7 +53,17 @@ NumCpp<T> NumCpp<T>::arange(const T v0, const T v1, const T d, const bool end)
     }
     return ret;
 }
-
+/**
+ * @brief Creates a one dimensional data filled with n equidistant
+ *        between half open range v0 to v1.
+ *        Calls arange(), see for fail conditions
+ *
+ * @tparam T
+ * @param v0 start value of range
+ * @param v1 end value of range (not included)
+ * @param n number of values in range
+ * @return NumCpp<T> the created 1D range. Empty data returned if failed to create range.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::linspace(const T v0, const T v1, const uint32_t n)
 {
@@ -49,6 +74,14 @@ NumCpp<T> NumCpp<T>::linspace(const T v0, const T v1, const uint32_t n)
 }
 
 /** N x N */
+
+/**
+ * @brief Creates n x n data filled with zeros. Failes if n == 0.
+ *
+ * @tparam T
+ * @param n the n size
+ * @return NumCpp<T> the created n x n data. Empty data if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::zero(uint32_t n)
 {
@@ -67,6 +100,14 @@ NumCpp<T> NumCpp<T>::zero(uint32_t n)
     return ret;
 }
 
+/**
+ * @brief Creates n x n data filled with zeros except on the diagonal where
+ *        ones are inserted. Failes if n == 0.
+ *
+ * @tparam T
+ * @param n the n size
+ * @return NumCpp<T> the created n x n data. Empty data if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::diag(uint32_t n)
 {
@@ -83,6 +124,14 @@ NumCpp<T> NumCpp<T>::diag(uint32_t n)
     return ret;
 }
 
+/**
+ * @brief Creates n x n data filled with val. Failes if n == 0.
+ *
+ * @tparam T
+ * @param n the n size
+ * @param val the value to fill with
+ * @return NumCpp<T> the created n x n data. Empty data if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::fill(uint32_t n, const T val)
 {
@@ -100,6 +149,15 @@ NumCpp<T> NumCpp<T>::fill(uint32_t n, const T val)
 }
 
 /** M x N */
+
+/**
+ * @brief Creates m x n data filled with zeros. Failes if m == 0 && n == 0.
+ *
+ * @tparam T
+ * @param m the m size
+ * @param n the n size
+ * @return NumCpp<T> the created m x n data. Empty data if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::zero(uint32_t m, uint32_t n)
 {
@@ -132,6 +190,15 @@ NumCpp<T> NumCpp<T>::zero(uint32_t m, uint32_t n)
     return ret;
 }
 
+/**
+ * @brief Creates m x n data filled with zeros except on the shortes diagonal
+ *        where ones are inserted. Failes if m == 0 && n == 0.
+ *
+ * @tparam T
+ * @param m the m size
+ * @param n the n size
+ * @return NumCpp<T> the created m x n data. Empty data if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::diag(uint32_t m, uint32_t n)
 {
@@ -159,6 +226,15 @@ NumCpp<T> NumCpp<T>::diag(uint32_t m, uint32_t n)
     return ret;
 }
 
+/**
+ * @brief Creates m x n data filled with val. Failes if m == 0 && n == 0.
+ *
+ * @tparam T
+ * @param m the m size
+ * @param n the n size
+ * @param val the value to fill with
+ * @return NumCpp<T> the created m x n data. Empty data if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::fill(uint32_t m, uint32_t n, const T val)
 {
@@ -176,6 +252,15 @@ NumCpp<T> NumCpp<T>::fill(uint32_t m, uint32_t n, const T val)
 }
 
 /** M x N x ... */
+
+/**
+ * @brief Create n-dimensional data specified by s_shape and s_dims filled with zeros.
+ *
+ * @tparam T
+ * @param s_shape the target shape
+ * @param s_dims the target dim, i.e. number of elements in s_shape
+ * @return NumCpp<T> the created n-dimensional data
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
 {
@@ -186,7 +271,15 @@ NumCpp<T> NumCpp<T>::zero(uint32_t *s_shape, uint32_t s_dims)
     free(src);
     return ret;
 }
-
+/**
+ * @brief Create n-dimensional data specified by s_shape and s_dims filled with val.
+ *
+ * @tparam T
+ * @param s_shape the target shape
+ * @param s_dims the target dim, i.e. number of elements in s_shape
+ * @param val the value to fill the data with
+ * @return NumCpp<T> the created n-dimensional data
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::fill(uint32_t *s_shape, uint32_t s_dims, const T val)
 {
@@ -195,31 +288,6 @@ NumCpp<T> NumCpp<T>::fill(uint32_t *s_shape, uint32_t s_dims, const T val)
     for (uint32_t i = 0; i < ret._size; ++i)
     {
         ret._insert(val, i);
-    }
-    return ret;
-}
-
-template <class T>
-NumCpp<T> NumCpp<T>::diag(uint32_t *s_shape, uint32_t s_dims)
-{
-    NumCpp<T> ret = zero(s_shape, s_dims);
-    uint32_t min_shape = s_shape[0];
-    if (s_dims == 1)
-    {
-        ret._insert((T)1, 0);
-        return ret;
-    }
-
-    if (s_dims >= 2)
-    {
-        if (s_dims > 2)
-            LOG(WARN, "no support for higher dims (s_dims > 2). setting only the first");
-        if (s_shape[1] < min_shape)
-            min_shape = s_shape[1];
-    }
-    for (uint32_t i = 0; i < min_shape; ++i)
-    {
-        ret._insert((T)1, i + i * s_shape[1]);
     }
     return ret;
 }
