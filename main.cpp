@@ -73,27 +73,24 @@ void test_predefs_mxnx(void)
     NF z1 = NF::zero(s_shape, NDIMS(s_shape));
     NF z2 = NF::zero(w_shape, NDIMS(w_shape));
     NF z3 = NF::zero(l_shape, NDIMS(l_shape));
+    NF z4 = NF::zero(m_shape, NDIMS(m_shape));
     NF o1 = NF::ones(s_shape, NDIMS(s_shape));
     NF o2 = NF::ones(w_shape, NDIMS(w_shape));
     NF o3 = NF::ones(l_shape, NDIMS(l_shape));
-    NF d1 = NF::diag(s_shape, NDIMS(s_shape));
-    NF d2 = NF::diag(w_shape, NDIMS(w_shape));
-    NF d3 = NF::diag(l_shape, NDIMS(l_shape));
-    NF f1 = NF::fill(s_shape, NDIMS(s_shape), 69.0);
-    NF f2 = NF::fill(w_shape, NDIMS(w_shape), 69.0);
-    NF f3 = NF::fill(l_shape, NDIMS(l_shape), 69.0);
+    NF o4 = NF::ones(m_shape, NDIMS(m_shape));
+    NF f1 = NF::fill(s_shape, NDIMS(s_shape), 69.0f);
+    NF f2 = NF::fill(w_shape, NDIMS(w_shape), 69.0f);
+    NF f3 = NF::fill(l_shape, NDIMS(l_shape), 69.0f);
+    NF f4 = NF::fill(m_shape, NDIMS(m_shape), 69.0f);
 
     z1.disp("zero 1");
     o1.disp("ones 1");
-    d1.disp("diag 1");
     f1.disp("fill 1");
     z2.disp("zero 2");
     o2.disp("ones 2");
-    d2.disp("diag 2");
     f2.disp("fill 2");
     z3.disp("zero 3");
     o3.disp("ones 3");
-    d3.disp("diag 3");
     f3.disp("fill 3");
 }
 void test_predefs_mxnx1(void)
