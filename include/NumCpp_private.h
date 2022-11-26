@@ -2,6 +2,15 @@
 #include "NumCpp.h"
 
 /** [PRIVATE] */
+
+/**
+ * @brief Calculated the size of data for given shape
+ *
+ * @tparam T
+ * @param s_shape shape of data to use for size calculation
+ * @param s_dims number of elements in s_dims
+ * @return uint32_t the size (> 0) of data. 0 if failed.
+ */
 template <class T>
 uint32_t NumCpp<T>::_get_size(const uint32_t *s_shape, uint32_t s_dims)
 {
@@ -22,7 +31,12 @@ uint32_t NumCpp<T>::_get_size(const uint32_t *s_shape, uint32_t s_dims)
     }
     return s_size;
 }
-
+/**
+ * @brief Updates the shape of data by flattening to single dimension
+ *
+ * @tparam T
+ * @param s_size size of the data.
+ */
 template <class T>
 void NumCpp<T>::_upd_shape(const uint32_t s_size)
 {
@@ -42,6 +56,13 @@ void NumCpp<T>::_upd_shape(const uint32_t s_size)
     this->_dims = 1;
     this->_size = s_size;
 }
+/**
+ * @brief Updates the shape according to s_shape and s_dims.
+ *
+ * @tparam T
+ * @param s_shape the new shape
+ * @param s_dims the new number of dimensions
+ */
 template <class T>
 void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
 {
@@ -66,139 +87,155 @@ void NumCpp<T>::_upd_shape(const uint32_t *s_shape, uint32_t s_dims)
     }
 }
 
+/**
+ * @brief Checks if location is inside bounds of data.
+ *        dims != 2 not suppoerted
+ *
+ * @tparam T
+ * @param loc the location to check
+ * @return false if outside of bounds
+ */
 template <class T>
 bool NumCpp<T>::_inside_bound(const loc_t loc)
 {
     if (this->_dims != 2)
         return false;
-    if (loc.row > this->_shape[1] || loc.col > this->_shape[0])
+    if (loc.row > this->_shape[0] || loc.col > this->_shape[1])
         return false;
-    return this->_inside_bound(loc.row * this->_shape[0] + loc.col);
+    return this->_inside_bound(loc.row * this->_shape[1] + loc.col);
 }
+/**
+ * @brief Checks if location is inside bounds of data.
+ *
+ * @tparam T
+ * @param s_loc n-dimensional location
+ * @param s_dims the amount of element sin s_loc
+ * @return false if outside of bounds.
+ */
 template <class T>
-bool NumCpp<T>::_inside_bound(const uint32_t *s_shape, const uint32_t s_dims)
+bool NumCpp<T>::_inside_bound(const uint32_t *s_loc, const uint32_t s_dims)
 {
     if (s_dims != this->_dims)
         return false;
     uint32_t s_size = 1;
     for (uint32_t i = 0; i < s_dims; ++i)
     {
-        s_size *= s_shape[i];
-        if (s_shape[i] > this->_shape[i])
+        s_size *= s_loc[i];
+        if (s_loc[i] > this->_shape[i])
             return false;
     }
     return this->_inside_bound(s_size);
 }
 
-template <class T>
-bool NumCpp<T>::_set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims)
-{
-    uint32_t s_size = _get_size(s_shape, s_dims);
-    if (this->_data == NULL)
-    {
-        this->_data = (T *)calloc(s_size, sizeof(T));
-        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
-        this->_upd_shape(s_shape, s_dims);
-        return this->_data != NULL;
-    }
-    else if (this->_size != s_size)
-    {
-        this->_data = (T *)realloc(this->_data, s_size * sizeof(T));
-        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
-        this->_upd_shape(s_shape, s_dims);
-        return this->_data != NULL;
-    }
-    else if (this->_size == s_size)
-    {
-        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
-        this->_upd_shape(s_shape, s_dims);
-        return this->_data != NULL;
-    }
-    else
-        LOG(IMPL, "Not implemented yet --> Uncatched case for setting data encountered");
-    return false;
-}
-
+/**
+ * @brief Inserts val at offset.
+ *        Does nothing if offset is outside of bounds.
+ *
+ * @tparam T
+ * @param val value to insert
+ * @param offset at location to insert, i.e. < size
+ */
 template <class T>
 void NumCpp<T>::_insert(T val, uint32_t offset)
 {
-    if (offset > this->_size)
+    if (offset < this->_size)
     {
-        LOG(ERROR, "Attempt at insertion outside allowed memory");
-        LOG(INFO, "Insertion aborted");
+        this->_data[offset] = val;
         return;
     }
-    this->_data[offset] = val;
+    LOG(ERROR, "Attempt at insertion outside allowed memory");
+    LOG(INFO, "Insertion aborted");
 }
 
+/**
+ * @brief Checks if shape is the same as for other
+ *
+ * @tparam T
+ * @param other the one to compare to
+ * @return true if shapes are the same
+ */
 template <class T>
-bool NumCpp<T>::_check_null(void)
+bool NumCpp<T>::_check_shape(const NumCpp<T> *other)
 {
-    return (this->_data != NULL && this->_shape != NULL && this->_dims != 0);
-}
-template <class T>
-bool NumCpp<T>::_check_null(const T *src, uint32_t *shape, uint32_t dims)
-{
-    return (src != NULL && shape != NULL && dims != 0);
-}
-
-template <class T>
-bool NumCpp<T>::_check_shape(const NumCpp<T> *b)
-{
-    if (this->_dims != b->_dims)
+    if (this->_dims != other->_dims)
         return false;
-    // uint32_t *ash = a->shape();
-    // const uint32_t *bsh = b->shape();
     for (uint32_t i = 0; i < this->_dims; ++i)
     {
-        if (this->_shape[i] != b->_shape[i])
+        if (this->_shape[i] != other->_shape[i])
             return false;
     }
     return true;
 }
-
+/**
+ * @brief The applies each element of this with constant other using fun.
+ *        Inserts the result of fun in returned data.
+ *
+ * @tparam T
+ * @param other the second value of to function fun
+ * @param fun pointer to function with two arguments (T, T) and returns T
+ * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
+ */
 template <class T>
-NumCpp<T> NumCpp<T>::_op_cfun(const T b, T (*fun)(T, T))
+NumCpp<T> NumCpp<T>::_op_cfun(const T other, T (*fun)(T, T))
 {
     if (!this->_check_null())
     {
-        LOG(WARN, "Null check failed on a");
+        LOG(WARN, "Null check failed on this");
         return *this;
     }
     NumCpp<T> ret(this->_shape, this->_dims);
     for (uint32_t i = 0; i < this->_size; ++i)
     {
-        ret._insert(fun(this->_data[i], b), i);
+        ret._insert(fun(this->_data[i], other), i);
     }
     return ret;
 }
-
+/**
+ * @brief The applies each element of this with correspondig element from other using fun.
+ *        Inserts the result of fun in returned data.
+ *
+ * @tparam T
+ * @param other
+ * @param fun pointer to function with two arguments (T, T) and returns T
+ * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
+ */
 template <class T>
-NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &b, T (*fun)(T, T))
+NumCpp<T> NumCpp<T>::_op_nfun(const NumCpp<T> &other, T (*fun)(T, T))
 {
     if (!this->_check_null())
     {
-        LOG(WARN, "Null check failed on a");
+        LOG(WARN, "Null check failed on this");
         return *this;
     }
-    if (!_check_null(b._data, b._shape, b._dims))
+    if (!_check_null(other._data, other._shape, other._dims))
     {
-        LOG(WARN, "Null check failed on b");
+        LOG(WARN, "Null check failed on other");
         return *this;
     }
-    if (!this->_check_shape(&b))
+    if (!this->_check_shape(&other))
     {
-        LOG(WARN, "Incompatible shapes for a and b");
+        LOG(WARN, "Incompatible shapes for this and other");
         return *this;
     }
     NumCpp<T> ret(this->_shape, this->_dims);
     for (uint32_t i = 0; i < this->_size; ++i)
     {
-        ret._insert(fun(this->_data[i], b._data[i]), i);
+        ret._insert(fun(this->_data[i], other._data[i]), i);
     }
     return ret;
 }
-
+/**
+ * @brief Pre-allocated version of _op_nfun(). Requires
+ *        dst to be allocated before call. Does not modify content
+ *        at dst if failed at any point.
+ *
+ * @tparam T
+ * @param dst the destination where to insert result of fun
+ * @param a the source of first argument to fun
+ * @param b the source of second argument to fun
+ * @param fun pointer to function with two arguments (T, T) and returns T
+ * @return NumCpp<T>* the same pointer as dst
+ */
 template <class T>
 NumCpp<T> *NumCpp<T>::_pre_op_nfun(NumCpp<T> *dst, NumCpp<T> *a, NumCpp<T> *b, T (*fun)(T, T))
 {
@@ -218,6 +255,18 @@ NumCpp<T> *NumCpp<T>::_pre_op_nfun(NumCpp<T> *dst, NumCpp<T> *a, NumCpp<T> *b, T
     }
     return dst;
 }
+/**
+ * @brief Pre-allocated version of _op_cfun(). Requires
+ *        dst to be allocated before call. Does not modify content
+ *        at dst if failed at any point.
+ *
+ * @tparam T
+ * @param dst the destination where to insert result of fun
+ * @param a the source of first argument to fun
+ * @param b the source of second argument to fun
+ * @param fun pointer to function with two arguments (T, T) and returns T
+ * @return NumCpp<T>* the same pointer as dst
+ */
 template <class T>
 NumCpp<T> *NumCpp<T>::_pre_op_cfun(NumCpp<T> *dst, NumCpp<T> *a, const T b, T (*fun)(T, T))
 {
@@ -238,48 +287,80 @@ NumCpp<T> *NumCpp<T>::_pre_op_cfun(NumCpp<T> *dst, NumCpp<T> *a, const T b, T (*
     return dst;
 }
 
+/**
+ * @brief The applies each element of this with constant other using fun.
+ *        Inserts the result of fun in returned data, as T equivalent of
+ *        1 (true) and 0 (false).
+ *
+ * @tparam T
+ * @param other the second value of to function fun
+ * @param fun pointer to function with two arguments (T, T) and returns bool
+ * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
+ */
 template <class T>
-NumCpp<T> NumCpp<T>::_op_clogic(const T b, bool (*fun)(T, T))
+NumCpp<T> NumCpp<T>::_op_clogic(const T other, bool (*fun)(T, T))
 {
     if (!this->_check_null())
     {
-        LOG(WARN, "Null check failed on a");
+        LOG(WARN, "Null check failed on this");
         return *this;
     }
     NumCpp<T> ret(this->_shape, this->_dims);
     for (uint32_t i = 0; i < this->_size; ++i)
     {
-        ret._insert(fun(this->_data[i], b) ? (T)1 : (T)0, i);
+        ret._insert(fun(this->_data[i], other) ? (T)1 : (T)0, i);
     }
     return ret;
 }
 
+/**
+ * @brief The applies each element of this with correspondig element from other using fun.
+ *        Inserts the result of fun in returned data, as T equivalent of
+ *        1 (true) and 0 (false).
+ *
+ * @tparam T
+ * @param other
+ * @param fun pointer to function with two arguments (T, T) and returns bool
+ * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
+ */
 template <class T>
-NumCpp<T> NumCpp<T>::_op_nlogic(const NumCpp<T> &b, bool (*fun)(T, T))
+NumCpp<T> NumCpp<T>::_op_nlogic(const NumCpp<T> &other, bool (*fun)(T, T))
 {
     if (!this->_check_null())
     {
-        LOG(WARN, "Null check failed on a");
+        LOG(WARN, "Null check failed on this");
         return *this;
     }
-    if (!_check_null(b._data, b._shape, b._dims))
+    if (!_check_null(other._data, other._shape, other._dims))
     {
-        LOG(WARN, "Null check failed on b");
+        LOG(WARN, "Null check failed on other");
         return *this;
     }
-    if (!_check_shape(&b))
+    if (!_check_shape(&other))
     {
-        LOG(WARN, "Incompatible shapes for a and b");
+        LOG(WARN, "Incompatible shapes for this and other");
         return *this;
     }
     NumCpp<T> ret(this->_shape, this->_dims);
     for (uint32_t i = 0; i < this->_size; ++i)
     {
-        ret._insert(fun(this->_data[i], b._data[i]) ? (T)1 : (T)0, i);
+        ret._insert(fun(this->_data[i], other._data[i]) ? (T)1 : (T)0, i);
     }
     return ret;
 }
 
+/**
+ * @brief Pre-allocated version of _op_nlogix(). Requires
+ *        dst to be allocated before call. Does not modify content
+ *        at dst if failed at any point.
+ *
+ * @tparam T
+ * @param dst the destination where to insert result of fun
+ * @param a the source of first argument to fun
+ * @param b the source of second argument to fun
+ * @param fun pointer to function with two arguments (T, T) and returns bool
+ * @return NumCpp<T>* the same pointer as dst
+ */
 template <class T>
 NumCpp<T> *NumCpp<T>::_pre_op_nlogic(NumCpp<T> *dst, NumCpp<T> *a, NumCpp<T> *b, bool (*fun)(T, T))
 {
@@ -299,6 +380,19 @@ NumCpp<T> *NumCpp<T>::_pre_op_nlogic(NumCpp<T> *dst, NumCpp<T> *a, NumCpp<T> *b,
     }
     return dst;
 }
+
+/**
+ * @brief Pre-allocated version of _op_clogic(). Requires
+ *        dst to be allocated before call. Does not modify content
+ *        at dst if failed at any point.
+ *
+ * @tparam T
+ * @param dst the destination where to insert result of fun
+ * @param a the source of first argument to fun
+ * @param b the source of second argument to fun
+ * @param fun pointer to function with two arguments (T, T) and returns bool
+ * @return NumCpp<T>* the same pointer as dst
+ */
 template <class T>
 NumCpp<T> *NumCpp<T>::_pre_op_clogic(NumCpp<T> *dst, NumCpp<T> *a, const T b, bool (*fun)(T, T))
 {

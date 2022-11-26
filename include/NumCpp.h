@@ -11,23 +11,31 @@ typedef struct
     uint32_t col;
 } loc_t;
 
+/**
+ * @brief Class for Numerical math, like NumPy for python
+ *
+ * @tparam T
+ */
 template <class T>
 class NumCpp
 {
 private:
-    T *_data;
-
-    uint32_t _size;
-    uint32_t _dims;
-    uint32_t *_shape;
+    T *_data;         /** memeber data */
+    uint32_t _size;   /** member size */
+    uint32_t _dims;   /** member dimensions */
+    uint32_t *_shape; /** member shape */
 
     static uint32_t _get_size(const uint32_t *s_shape, uint32_t s_dims);
     void _upd_shape(const uint32_t s_size);
     void _upd_shape(const uint32_t *s_shape, uint32_t s_dims);
-    bool _set_data(const T *src, const uint32_t *s_shape, uint32_t s_dims);
 
     void _insert(const T, uint32_t offset);
-
+    /**
+     * @brief bounds checking
+     *
+     * @param index index to be checked
+     * @return true if inside bounds
+     */
     bool _inside_bound(const uint32_t index) { return index < this->_size; }
     bool _inside_bound(const loc_t);
     bool _inside_bound(const uint32_t *, const uint32_t);
@@ -53,8 +61,8 @@ private:
     static bool _op_gt(T a, T b) { return _op_lt(b, a); }
     static bool _op_equ(T a, T b) { return !_op_neq(a, b); }
 
-    bool _check_null(void);
-    bool _check_null(const T *src, uint32_t *shape, uint32_t dims);
+    bool _check_null(void) { return (this->_data != NULL && this->_shape != NULL && this->_dims != 0); }
+    bool _check_null(const T *src, uint32_t *shape, uint32_t dims) { return (src != NULL && shape != NULL && dims != 0); }
     bool _check_shape(const NumCpp *b);
 
 public:
@@ -65,15 +73,27 @@ public:
     ~NumCpp();
 
     /** shapes and size of data */
-    const uint32_t *shape(void) { return _shape; }
+
+    const uint32_t *shape(void);
+    /**
+     * @brief The dimensions of data
+     *
+     * @return uint32_t number of dims for shape of data
+     */
     uint32_t dims(void) { return _dims; }
+    /**
+     * @brief The size of data
+     *
+     * @return uint32_t number of elements of data
+     */
     uint32_t size(void) { return _size; }
 
     void disp(const char *msg = "no comment");
 
-    /** Getters and setters */
+    /* Getters and setters */
+
     void set(const T *src, uint32_t s_size);
-    void set(const T *src, uint32_t *shape, uint32_t dims); // set new data
+    void set(const T *src, uint32_t *shape, uint32_t dims);
 
     /** reshapers */
     NumCpp reshape(uint32_t *n_shape, uint32_t n_dims);
@@ -206,10 +226,6 @@ public:
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
     NumCpp sum(uint32_t dim);
-    NumCpp sin(void);
-    NumCpp cos(void);
-    NumCpp asin(void);
-    NumCpp acos(void);
     NumCpp abs(void);
     NumCpp sqrt(void);
     NumCpp det(void);
@@ -225,6 +241,12 @@ public:
 };
 
 /** [CONSTRUCTOR / DESTRUCTOR]*/
+
+/**
+ * @brief Construct a new NumCpp< T>:: NumCpp object with uninitialized data.
+ *
+ * @tparam T
+ */
 template <class T>
 NumCpp<T>::NumCpp()
 {
@@ -233,6 +255,13 @@ NumCpp<T>::NumCpp()
     this->_size = 0;
     this->_shape = NULL;
 }
+/**
+ * @brief Construct a new NumCpp< T>:: NumCpp object with predefined shape and data set to zeros.
+ *
+ * @tparam T
+ * @param s_shape shape of the data
+ * @param s_dims number of dimentions of data, i.e. the number of elements in s_shape
+ */
 template <class T>
 NumCpp<T>::NumCpp(uint32_t *s_shape, uint32_t s_dims)
 {
@@ -247,6 +276,15 @@ NumCpp<T>::NumCpp(uint32_t *s_shape, uint32_t s_dims)
     this->_dims = s_dims;
     this->_size = s_size;
 }
+/**
+ * @brief Construct a new NumCpp< T>:: NumCpp object with data according to content of src.
+ *
+ * @tparam T
+ * @param src to be used to construct data
+ * @param s_shape shape of the data. Each element multiplied with eachother must be <= amount of
+ *                elements in src.
+ * @param s_dims number of dimensions of data, i.e. number of elements in s_shape
+ */
 template <class T>
 NumCpp<T>::NumCpp(const T *src, uint32_t *s_shape, uint32_t s_dims)
 {
@@ -262,7 +300,11 @@ NumCpp<T>::NumCpp(const T *src, uint32_t *s_shape, uint32_t s_dims)
     this->_dims = s_dims;
     this->_size = s_size;
 }
-
+/**
+ * @brief Destroy the NumCpp< T>:: NumCpp object and frees allocated resources.
+ *
+ * @tparam T
+ */
 template <class T>
 NumCpp<T>::~NumCpp()
 {
@@ -277,6 +319,29 @@ NumCpp<T>::~NumCpp()
 #include "NumCpp_assert.h"
 
 /** [PUBLIC] */
+
+/**
+ * @brief The shape of data. MUST be freed by recipient after use.
+ *
+ * @return const uint32_t* copy of shape of data
+ */
+template <class T>
+const uint32_t *NumCpp<T>::shape(void)
+{
+    if (this->_shape == NULL)
+        return NULL;
+    uint32_t *ret = (uint32_t *)calloc(this->_dims, sizeof(T));
+    ret = (uint32_t *)memcpy(ret, this->_shape, sizeof(T) * this->_dims);
+    return ret;
+}
+
+/**
+ * @brief Sets/Updates data according to src.
+ *
+ * @tparam T
+ * @param src data to be used for setting/updating
+ * @param s_size number of elements in src
+ */
 template <class T>
 void NumCpp<T>::set(const T *src, uint32_t s_size)
 {
@@ -285,7 +350,6 @@ void NumCpp<T>::set(const T *src, uint32_t s_size)
         LOG(WARN, "s_size == 0 not supported. Nothing is done with _data");
         return;
     }
-
     if (this->_data == NULL)
     {
         this->_data = (T *)calloc(s_size, sizeof(T));
@@ -309,6 +373,15 @@ void NumCpp<T>::set(const T *src, uint32_t s_size)
     if (this->_data == NULL)
         LOG(ERROR, "Could not set data.");
 }
+/**
+ * @brief Sets/Updates data according to src.
+ *
+ * @tparam T
+ * @param src data to be used for setting/updating
+ * @param s_shape shape of the data. Each element multiplied with eachother must be <= amount of
+ *                elements in src.
+ * @param s_dims number of elements is s_shape
+ */
 template <class T>
 void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
 {
@@ -318,12 +391,40 @@ void NumCpp<T>::set(const T *src, uint32_t *s_shape, uint32_t s_dims)
         return;
     }
 
-    bool retval = this->_set_data(src, s_shape, s_dims);
+    uint32_t s_size = _get_size(s_shape, s_dims);
+    if (this->_data == NULL)
+    {
+        this->_data = (T *)calloc(s_size, sizeof(T));
+        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
+        this->_upd_shape(s_shape, s_dims);
+    }
+    else if (this->_size != s_size)
+    {
+        this->_data = (T *)realloc(this->_data, s_size * sizeof(T));
+        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
+        this->_upd_shape(s_shape, s_dims);
+    }
+    else if (this->_size == s_size)
+    {
+        this->_data = (T *)memcpy(this->_data, src, s_size * sizeof(T));
+        this->_upd_shape(s_shape, s_dims);
+    }
+    else
+        LOG(IMPL, "Not implemented yet --> Uncatched case for setting data encountered");
 
-    if (!retval)
+    if (this->_data == NULL)
         LOG(ERROR, "Could not set data.");
 }
-
+/**
+ * @brief Reshapes data according to n_shape and n_dims.
+ *        The new shape must be compatible with the old data.
+ *        dims > 2 currently not supported.
+ *
+ * @tparam T
+ * @param n_shape the new data shape
+ * @param n_dims the new data dims
+ * @return NumCpp<T> the new reshaped data. Returns unmodified if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::reshape(uint32_t *n_shape, uint32_t n_dims)
 {
@@ -345,6 +446,16 @@ NumCpp<T> NumCpp<T>::reshape(uint32_t *n_shape, uint32_t n_dims)
     }
     return this->reshape(n_shape[0], n_shape[1]);
 }
+/**
+ * @brief Reshapes data from current shape to m x n.
+ *        Current shape must be compatible with the new.
+ *        dims > 2 currently not supported.
+ *
+ * @tparam T
+ * @param m new value for shape[0]
+ * @param n new value for shape[1]
+ * @return NumCpp<T> the new reshaped data. Returns unmodified if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::reshape(uint32_t m, uint32_t n)
 {
@@ -387,10 +498,20 @@ NumCpp<T> NumCpp<T>::reshape(uint32_t m, uint32_t n)
 
     return *this;
 }
+/**
+ * @brief Squashes n-dimensional data to one dimension.
+ *        Default column formatted, e.g. shape[1] = 1.
+ *        dim < 2 not possible
+ *        dim > 2 not suppored currently.
+ *
+ * @tparam T
+ * @param to_row if data should be row formatted (e.g. shape[0] = 1) (optional, default false)
+ * @return NumCpp<T> the flattened data. Returns unmodified if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::flatten(bool to_row)
 {
-    if (this->_dims <= 1)
+    if (this->_dims < 2)
     {
         LOG(ERROR, "Cannot flatten a flattened (or zero) data structure (dims <= 1)");
         return *this;
@@ -414,6 +535,13 @@ NumCpp<T> NumCpp<T>::flatten(bool to_row)
     }
     return *this;
 }
+/**
+ * @brief Transposes data.
+ *        dims > 2 currently not supported
+ *
+ * @tparam T
+ * @return NumCpp<T> the transposed data. Return unmodified if failed.
+ */
 template <class T>
 NumCpp<T> NumCpp<T>::trans(void)
 {
@@ -474,6 +602,13 @@ NumCpp<T> NumCpp<T>::trans(void)
     return *this;
 }
 
+/**
+ * @brief Implementation of = operator, i.e. sets this to other using
+ *
+ * @tparam T
+ * @param other the content to be copied. No copying is done if this == &other
+ * @return NumCpp<T>& dereferenced this pointer.
+ */
 template <class T>
 NumCpp<T> &NumCpp<T>::operator=(const NumCpp<T> &other)
 {
@@ -483,6 +618,14 @@ NumCpp<T> &NumCpp<T>::operator=(const NumCpp<T> &other)
     return *this;
 }
 
+/**
+ * @brief Implementation of [] operator, i.e. for data member access.
+ *        Get the values at from specifc row.
+ *
+ * @tparam T
+ * @param loc the location, i.e. the row
+ * @return NumCpp<T>& the copy of data from row loc. Returns empty data if failed.
+ */
 template <class T>
 NumCpp<T> &NumCpp<T>::operator[](const uint32_t loc)
 {
@@ -501,6 +644,14 @@ NumCpp<T> &NumCpp<T>::operator[](const uint32_t loc)
     free(src);
     return *ret;
 }
+/**
+ * @brief Implemetation of [] operator, i.e. for data member access.
+ *        Get the value at a specific location in 2 dimensions.
+ *
+ * @tparam T
+ * @param loc location to access data
+ * @return T the value at loc. 0 if failed.
+ */
 template <class T>
 T NumCpp<T>::operator[](const loc_t loc)
 {

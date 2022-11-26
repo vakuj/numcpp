@@ -30,6 +30,17 @@ bool NumCpp<T>::assert_memory(const NumCpp<T> self, const NumCpp<T> ref)
     }
     return true;
 }
+/**
+ * @brief Checks expr to evaluate assertion. Produces pass/fail message to stdout.
+ *        Does NOT abort execution if failed.
+ *
+ * @tparam T Numeric type, ex. float
+ * @param expr Assertion evaluation, false gives failing condition.
+ * @param file Indication of location, ex. __FILE__
+ * @param func Indication of function, ex. __FUNCTION__
+ * @param line Indication of line number, ex. __LINE__
+ * @param msg Additional user comment.
+ */
 template <class T>
 void NumCpp<T>::assert_check(bool expr, const char *file, const char *func, int line, const char *msg)
 {
@@ -38,7 +49,17 @@ void NumCpp<T>::assert_check(bool expr, const char *file, const char *func, int 
     else
         printf("[Assertion passed] %s:%s:%03d\n", file, func, line);
 }
-
+/**
+ * @brief Checks expr to if assetion passed. Produces pass/fail message to stdout.
+ *        Aborts execution if failed.
+ *
+ * @tparam T Numeric type, ex. float
+ * @param expr Assertion evaluation, false gives failing condition.
+ * @param file Indication of location, ex. __FILE__
+ * @param func Indication of function, ex. __FUNCTION__
+ * @param line Indication of line number, ex. __LINE__
+ * @param msg Additional user comment.
+ */
 template <class T>
 void NumCpp<T>::xpass(bool expr, const char *file, const char *func, int line, const char *msg)
 {
@@ -49,6 +70,17 @@ void NumCpp<T>::xpass(bool expr, const char *file, const char *func, int line, c
     }
     printf("[XPASS passed]: %s:%s:%03d\n", file, func, line);
 }
+/**
+ * @brief Checks expr to if assetion passed. Produces pass/fail message to stdout.
+ *        Aborts execution if failed.
+ *
+ * @tparam T Numeric type, ex. float
+ * @param expr Assertion evaluation, true gives failing condition.
+ * @param file Indication of location, ex. __FILE__
+ * @param func Indication of function, ex. __FUNCTION__
+ * @param line Indication of line number, ex. __LINE__
+ * @param msg Additional user comment.
+ */
 template <class T>
 void NumCpp<T>::xfail(bool expr, const char *file, const char *func, int line, const char *msg)
 {
@@ -59,6 +91,7 @@ void NumCpp<T>::xfail(bool expr, const char *file, const char *func, int line, c
     }
     printf("[XFAIL passed]: %s:%s:%03d\n", file, func, line);
 }
+
 #define ASSERT_SIZE(_self, _ref) NumCpp<float>::assert_check(NumCpp<float>::assert_size(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_size must match")
 #define ASSERT_DIMS(_self, _ref) NumCpp<float>::assert_check(NumCpp<float>::assert_dims(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_dims must match")
 #define ASSERT_SHAPE(_self, _ref) NumCpp<float>::assert_check(NumCpp<float>::assert_shape(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_shape must match")
@@ -71,8 +104,8 @@ void NumCpp<T>::xfail(bool expr, const char *file, const char *func, int line, c
 #define XPASS_MEMORY(_self, _ref) NumCpp<float>::xpass(NumCpp<float>::assert_memory(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_data must match")
 #define XPASS_EMPTY(_self) NumCpp<float>::xpass(NumCpp<float>::assert_empty(_self), __FILE__, __FUNCTION__, __LINE__, "_data must be empty")
 
-#define XFAIL_SIZE(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_size(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_size must match")
-#define XFAIL_DIMS(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_dims(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_dims must match")
-#define XFAIL_SHAPE(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_shape(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_shape must match")
-#define XFAIL_MEMORY(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_memory(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_data must match")
-#define XFAIL_EMPTY(_self) NumCpp<float>::xfail(NumCpp<float>::assert_empty(_self), __FILE__, __FUNCTION__, __LINE__, "_data must be empty")
+#define XFAIL_SIZE(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_size(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_size should not match")
+#define XFAIL_DIMS(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_dims(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_dims should not match")
+#define XFAIL_SHAPE(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_shape(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_shape should not match")
+#define XFAIL_MEMORY(_self, _ref) NumCpp<float>::xfail(NumCpp<float>::assert_memory(_self, _ref), __FILE__, __FUNCTION__, __LINE__, "_data should not match")
+#define XFAIL_EMPTY(_self) NumCpp<float>::xfail(NumCpp<float>::assert_empty(_self), __FILE__, __FUNCTION__, __LINE__, "_data should not be empty")
