@@ -15,9 +15,6 @@ void log_out(const char *_lvl, const char *_file, const char *_func, int _line, 
     printf("%s %s:%s:%03d: %s\n", _lvl, _file, _func, _line, _msg);
     assert(strcmp(_lvl, WARN) != 0);
     assert(strcmp(_lvl, ERROR) != 0);
-    // cout
-    //     << _lvl << " " << _file << ":" << _line << ": " << _msg << "\n";
-    // cout << ":\n\t" << _msg << "\n";
 }
 
 #ifdef DEBUG
