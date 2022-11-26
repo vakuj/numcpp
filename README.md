@@ -103,10 +103,6 @@ Nothing scheduled. Most progress probably on weekends if there is time to spare.
     NumCpp load(const char *file);
     void get(T *dst, uint32_t atdim = 0, uint32_t idx = 0);
     NumCpp sum(uint32_t dim);
-    NumCpp sin(void);
-    NumCpp cos(void);
-    NumCpp asin(void);
-    NumCpp acos(void);
     NumCpp abs(void);
     NumCpp sqrt(void);
     NumCpp det(void);
