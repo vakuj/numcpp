@@ -1,9 +1,5 @@
 #include <iostream>
-#include <string>
 #include <cstring>
-#include <cstdio>
-#include <cstdint>
-#include <cfloat>
 
 #include "include/NumCpp.h"
 #include "include/NumCpp_helpers.h"
@@ -402,15 +398,16 @@ void example(void)
 int main()
 {
     test_pre_ops();
-    // test_assert();
-    // test_math();
-    // example();
-    // test_access();
-    // test_ops();
-    // test_reshaping();
-    // test_predefs_mxnx1();
-    // test_predefs_mxnx();
-    // test_predefs_nxn();
-    // test_predefs_1xn();
+    test_assert();
+    test_math();
+    example();
+    test_access();
+    test_ops();
+    test_reshaping();
+    test_predefs_mxnx1();
+    test_predefs_mxnx();
+    test_predefs_nxn();
+    test_predefs_1xn();
+
     return 0;
 }
