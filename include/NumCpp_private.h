@@ -3,6 +3,81 @@
 
 /** [PRIVATE] */
 
+template <class T>
+inline uint32_t NumCpp<T>::_index(loc_t loc)
+{
+    return ((loc.col + loc.row * this->_shape[0]) % this->_size);
+}
+template <class T>
+inline uint32_t NumCpp<T>::_col_nbr(uint32_t index)
+{
+    return ((index % this->_shape[0]));
+}
+template <class T>
+inline uint32_t NumCpp<T>::_row_nbr(uint32_t index)
+{
+    return (this->_dims < 2) ? 0 : ((index / this->_shape[0]) % (this->_shape[0] * this->_shape[1]));
+}
+template <class T>
+inline uint32_t NumCpp<T>::_page_nbr(uint32_t index)
+{
+    /** TODO */
+    // return (this->_dims < 3) ? 0 : ((index / this->_shape[0]) % (this->_shape[0] * this->_shape[1]));
+    return 0;
+}
+
+template <class T>
+T *NumCpp<T>::_get_col(T *dst, uint32_t offset)
+{
+    if (dst == NULL)
+        dst = (T *)calloc(this->_shape[1], sizeof(T));
+    loc_t loc = {0, 0};
+    for (uint32_t i = 0; i < this->_shape[1]; ++i)
+    {
+        loc.row = i;
+        loc.col = offset;
+        dst[i] = this->_data[this->_index(loc)];
+    }
+    return dst;
+}
+template <class T>
+T *NumCpp<T>::_get_row(T *dst, uint32_t offset)
+{
+    if (dst == NULL)
+        dst = (T *)calloc(this->_shape[0], sizeof(T));
+    loc_t loc = {0, 0};
+    for (uint32_t i = 0; i < this->_shape[0]; ++i)
+    {
+        loc.row = offset;
+        loc.col = i;
+        dst[i] = this->_data[this->_index(loc)];
+    }
+    return dst;
+}
+template <class T>
+T *NumCpp<T>::_get_diag(T *dst, uint32_t offset)
+{
+    uint32_t min_shape = this->_shape[0] <= this->_shape[1] ? this->_shape[0] : this->_shape[1];
+    if (dst == NULL)
+        dst = (T *)calloc(min_shape, sizeof(T));
+    loc_t loc = {0, 0};
+    for (uint32_t i = 0; i < min_shape; ++i)
+    {
+        loc.row = (i + offset) % min_shape;
+        loc.col = (i + offset) % min_shape;
+        dst[i] = this->_data[this->_index(loc)];
+    }
+    return dst;
+}
+template <class T>
+T *NumCpp<T>::_get_page(T *dst, uint32_t offset)
+{
+    if (dst == NULL)
+        dst = (T *)calloc(this->_shape[0] * this->_shape[1], sizeof(T));
+    /** TODO */
+    return dst;
+}
+
 /**
  * @brief Calculated the size of data for given shape
  *
@@ -171,7 +246,7 @@ bool NumCpp<T>::_check_shape(const NumCpp<T> *other)
  *        Inserts the result of fun in returned data.
  *
  * @tparam T
- * @param other the second value of to function fun
+ * @param other the second value for fun
  * @param fun pointer to function with two arguments (T, T) and returns T
  * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
  */
@@ -195,7 +270,7 @@ NumCpp<T> NumCpp<T>::_op_cfun(const T other, T (*fun)(T, T))
  *        Inserts the result of fun in returned data.
  *
  * @tparam T
- * @param other
+ * @param other the source of second argument values for fun
  * @param fun pointer to function with two arguments (T, T) and returns T
  * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
  */
@@ -319,7 +394,7 @@ NumCpp<T> NumCpp<T>::_op_clogic(const T other, bool (*fun)(T, T))
  *        1 (true) and 0 (false).
  *
  * @tparam T
- * @param other
+ * @param other the source of second argument values for fun
  * @param fun pointer to function with two arguments (T, T) and returns bool
  * @return NumCpp<T> the returned data. Unmodified this is returned if failed.
  */

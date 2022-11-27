@@ -65,6 +65,15 @@ private:
     bool _check_null(const T *src, uint32_t *shape, uint32_t dims) { return (src != NULL && shape != NULL && dims != 0); }
     bool _check_shape(const NumCpp *other);
 
+    uint32_t _index(loc_t loc);
+    uint32_t _row_nbr(uint32_t index = 0);
+    uint32_t _col_nbr(uint32_t index = 0);
+    uint32_t _page_nbr(uint32_t index = 0);
+    T *_get_row(T *, uint32_t offset = 0);
+    T *_get_col(T *, uint32_t offset = 0);
+    T *_get_diag(T *, uint32_t offset = 0);
+    T *_get_page(T *, uint32_t offset = 0);
+
 public:
     NumCpp();
     NumCpp(uint32_t *, uint32_t);
@@ -710,6 +719,6 @@ T NumCpp<T>::operator[](const loc_t loc)
         LOG(ERROR, "location outside of bounds of data");
         return 0;
     }
-    return this->_data[loc.row * this->_shape[0] + loc.col];
+    return this->_data[this->_index(loc)];
 }
 #endif
