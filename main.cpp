@@ -272,7 +272,6 @@ void test_math(void)
 
     NF c = NF_DIAG(4);
     // NF c = NF_LINSPACE(0, 9, 9).reshape(3, 3);
-
     c.disp("c");
 
 #define COUNT 4
@@ -302,6 +301,21 @@ void test_math(void)
     free(min2);
     free(ll1);
     free(ll2);
+
+    // NF ma1 = NF_DIAG(2);
+    // NF mb1 = NF::arange(2.f, 8.f, 2.f).reshape(2, 2);
+    // NF mm1 = ma1.matmul(&mb1);
+    NF ma2 = NF::arange(0.f, 5.f, 1.f).reshape(3, 2);
+    NF mb2 = NF::arange(0.f, 5.f, 1.f).reshape(2, 3);
+    NF mm2 = ma2.matmul(&mb2);
+    // NF mm3 = mb2.matmul(&ma2);
+    // ma1.disp("ma1");
+    // mb1.disp("mb1");
+    // mm1.disp("mm1");
+    ma2.disp("ma2");
+    mb2.disp("mb2");
+    mm2.disp("mm2");
+    // mm3.disp("mm3");
 }
 void test_assert(void)
 {
@@ -394,17 +408,17 @@ void example(void)
 }
 int main()
 {
-    test_pre_ops();
-    test_assert();
+    // test_pre_ops();
+    // test_assert();
     test_math();
-    example();
-    test_access();
-    test_ops();
-    test_reshaping();
-    test_predefs_mxnx1();
-    test_predefs_mxnx();
-    test_predefs_nxn();
-    test_predefs_1xn();
+    // example();
+    // test_access();
+    // test_ops();
+    // test_reshaping();
+    // test_predefs_mxnx1();
+    // test_predefs_mxnx();
+    // test_predefs_nxn();
+    // test_predefs_1xn();
 
     return 0;
 }

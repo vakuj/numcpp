@@ -209,3 +209,43 @@ loc_t *NumCpp<T>::coord(uint32_t *index, const uint32_t len)
     }
     return ret;
 }
+
+template <class T>
+NumCpp<T> NumCpp<T>::matmul(NumCpp<T> *other)
+{
+    NumCpp<T> ret;
+    if (this->_dims != 2 || other->_dims != 2)
+    {
+        LOG(IMPL, "Currently only supporint 2D data");
+        return ret;
+    }
+    if (!this->_check_null() || !other->_check_null())
+    {
+        LOG(ERROR, "Cannot matmul empty data");
+        return ret;
+    }
+    if (this->_shape[1] != other->_shape[0])
+    {
+        LOG(ERROR, "Shapes not compatible for matmul. this->_shape[1] != other->_shape[0]");
+        return ret;
+    }
+    ret = NumCpp<T>::zero(this->_shape[0], other->_shape[1]);
+    uint32_t col = 0;
+    uint32_t row = 0;
+    T res = (T)0;
+    for (uint32_t i = 0; i < ret._size; ++i)
+    {
+        res = (T)0;
+        col = ret._col_nbr(i);
+        row = ret._row_nbr(i);
+        printf("col=%d, row=%d\n", col, row);
+        for (uint32_t offset = 0; offset < this->_shape[1]; ++offset)
+        {
+            printf("row_elem=%f, col_elem=%f\n", this->_get_row_element(row, offset), other->_get_col_element(col, offset));
+            res += (this->_get_row_element(row, offset) * other->_get_col_element(col, offset));
+        }
+        printf("res(%d,%d)=%f\n", col, row, res);
+        ret._data[i] = res;
+    }
+    return ret;
+}

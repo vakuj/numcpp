@@ -292,8 +292,8 @@ public:
     NumCpp det(void);
     NumCpp norm(void);
     NumCpp inv(void);
-    NumCpp dot(const NumCpp a, const NumCpp b);
-    NumCpp matmul(const NumCpp a, const NumCpp b);
+    NumCpp dot(NumCpp *other);
+    NumCpp matmul(NumCpp *other);
     NumCpp &operator+=(const NumCpp &);
     NumCpp &operator-=(const NumCpp &);
     NumCpp &operator*=(const NumCpp &);
