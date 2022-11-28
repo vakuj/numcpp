@@ -5,10 +5,8 @@
 /**
  * @brief Creates one dimensional data filled with values from v0
  *        to (and including) v1 with stepsize d.
- *        Failes if:
- *          - v1 == v0
- *          -  d == 0
- *          - v1 >  v0 && d < 0
+ *        Failes if: (v1 == v0), (d == 0) or
+ *        (v1 >  v0 && d < 0)
  *
  * @tparam T
  * @param v0 start value of range.
