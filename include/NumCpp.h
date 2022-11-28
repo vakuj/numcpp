@@ -69,6 +69,9 @@ private:
     uint32_t _row_nbr(uint32_t index = 0);
     uint32_t _col_nbr(uint32_t index = 0);
     uint32_t _page_nbr(uint32_t index = 0);
+    T _get_row_element(uint32_t row_index, uint32_t offset = 0);
+    T _get_col_element(uint32_t col_index, uint32_t offset = 0);
+    T _get_diag_element(uint32_t diag_index, uint32_t offset = 0);
     T *_get_row(T *, uint32_t offset = 0);
     T *_get_col(T *, uint32_t offset = 0);
     T *_get_diag(T *, uint32_t offset = 0);
