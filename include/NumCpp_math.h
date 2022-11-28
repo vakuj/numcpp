@@ -183,11 +183,8 @@ loc_t NumCpp<T>::coord(const uint32_t index)
         LOG(ERROR, "Shape not compatible with 2D location");
         return ret;
     }
-    ret.row = index / this->_shape[0];
-    if (ret.row == 0)
-        ret.col = index;
-    else
-        ret.col = (index - ret.row * this->_shape[0]);
+    ret.row = this->_row_nbr(index);
+    ret.col = this->_col_nbr(index);
     return ret;
 }
 template <class T>
