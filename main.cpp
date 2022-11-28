@@ -302,20 +302,20 @@ void test_math(void)
     free(ll1);
     free(ll2);
 
-    // NF ma1 = NF_DIAG(2);
-    // NF mb1 = NF::arange(2.f, 8.f, 2.f).reshape(2, 2);
-    // NF mm1 = ma1.matmul(&mb1);
+    NF ma1 = NF_DIAG(2);
+    NF mb1 = NF::arange(2.f, 8.f, 2.f).reshape(2, 2);
+    NF mm1 = ma1.matmul(&mb1);
     NF ma2 = NF::arange(0.f, 5.f, 1.f).reshape(3, 2);
     NF mb2 = NF::arange(0.f, 5.f, 1.f).reshape(2, 3);
     NF mm2 = ma2.matmul(&mb2);
-    // NF mm3 = mb2.matmul(&ma2);
-    // ma1.disp("ma1");
-    // mb1.disp("mb1");
-    // mm1.disp("mm1");
+    NF mm3 = mb2.matmul(&ma2);
+    ma1.disp("ma1");
+    mb1.disp("mb1");
+    mm1.disp("mm1");
     ma2.disp("ma2");
     mb2.disp("mb2");
     mm2.disp("mm2");
-    // mm3.disp("mm3");
+    mm3.disp("mm3");
 }
 void test_assert(void)
 {

@@ -6,7 +6,7 @@
 template <class T>
 inline uint32_t NumCpp<T>::_index(loc_t loc)
 {
-    return ((loc.col + loc.row * this->_shape[0]) % this->_size);
+    return ((loc.col + loc.row * this->_shape[1]) % this->_size);
 }
 template <class T>
 inline uint32_t NumCpp<T>::_col_nbr(uint32_t index)
@@ -29,20 +29,17 @@ inline uint32_t NumCpp<T>::_page_nbr(uint32_t index)
 template <class T>
 inline T NumCpp<T>::_get_row_element(uint32_t row_index, uint32_t offset)
 {
-    loc_t loc = {0, 0};
-    return this->_data[this->_index({loc.row = row_index, loc.col = offset})];
+    return this->_data[this->_index({row_index, offset})];
 }
 template <class T>
 inline T NumCpp<T>::_get_col_element(uint32_t col_index, uint32_t offset)
 {
-    loc_t loc = {0, 0};
-    return this->_data[this->_index({loc.row = offset, loc.col = col_index})];
+    return this->_data[this->_index({offset, col_index})];
 }
 template <class T>
 inline T NumCpp<T>::_get_diag_element(uint32_t diag_index, uint32_t offset)
 {
-    loc_t loc = {0, 0};
-    return this->_data[this->_index({loc.row = diag_index + offset, loc.col = diag_index + offset})];
+    return this->_data[this->_index({diag_index + offset, diag_index + offset})];
 }
 
 template <class T>
